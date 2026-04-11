@@ -592,6 +592,386 @@
   --elevate-2: rgba(0,0,0,.08);
 }
 
+/* ─── CYBERPUNK ─── neon cyan + magenta on near-black ──────────── */
+[data-color-theme="cyberpunk"] {
+  --background: 280 60% 4%;
+  --foreground: 290 40% 88%;
+  --border: 280 45% 14%;
+  --card: 280 50% 7%;
+  --card-foreground: 290 40% 88%;
+  --card-border: 280 45% 14%;
+  --sidebar: 280 60% 3%;
+  --sidebar-foreground: 290 40% 88%;
+  --sidebar-border: 280 45% 11%;
+  --sidebar-primary: 183 100% 50%;
+  --sidebar-primary-foreground: 280 60% 5%;
+  --sidebar-accent: 280 45% 9%;
+  --sidebar-accent-foreground: 290 40% 88%;
+  --sidebar-ring: 183 100% 50%;
+  --popover: 280 50% 7%;
+  --popover-foreground: 290 40% 88%;
+  --popover-border: 280 45% 14%;
+  --primary: 183 100% 50%;
+  --primary-foreground: 280 60% 5%;
+  --secondary: 280 45% 9%;
+  --secondary-foreground: 290 40% 88%;
+  --muted: 280 40% 10%;
+  --muted-foreground: 280 20% 55%;
+  --accent: 300 100% 62%;
+  --accent-foreground: 0 0% 0%;
+  --destructive: 0 90% 58%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 280 45% 14%;
+  --ring: 183 100% 50%;
+  --button-outline: rgba(0,255,231,.15);
+  --badge-outline: rgba(0,255,231,.08);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(0,255,231,.04);
+  --elevate-2: rgba(0,255,231,.09);
+}
+
+/* ─── VAPORWAVE ─── hot pink + purple on deep purple ───────────── */
+[data-color-theme="vaporwave"] {
+  --background: 285 45% 8%;
+  --foreground: 295 30% 88%;
+  --border: 285 35% 17%;
+  --card: 285 40% 11%;
+  --card-foreground: 295 30% 88%;
+  --card-border: 285 35% 17%;
+  --sidebar: 285 45% 6%;
+  --sidebar-foreground: 295 30% 88%;
+  --sidebar-border: 285 35% 14%;
+  --sidebar-primary: 315 80% 65%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 285 35% 13%;
+  --sidebar-accent-foreground: 295 30% 88%;
+  --sidebar-ring: 315 80% 65%;
+  --popover: 285 40% 11%;
+  --popover-foreground: 295 30% 88%;
+  --popover-border: 285 35% 17%;
+  --primary: 315 80% 65%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 285 35% 13%;
+  --secondary-foreground: 295 30% 88%;
+  --muted: 285 30% 13%;
+  --muted-foreground: 285 16% 55%;
+  --accent: 185 80% 60%;
+  --accent-foreground: 285 60% 8%;
+  --destructive: 0 75% 55%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 285 35% 17%;
+  --ring: 315 80% 65%;
+  --button-outline: rgba(255,113,206,.15);
+  --badge-outline: rgba(255,113,206,.08);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(255,113,206,.04);
+  --elevate-2: rgba(255,113,206,.09);
+}
+
+/* ─── DRACULA ─────────────────────────────────────────────────────── */
+[data-color-theme="dracula"] {
+  --background: 231 15% 18%;
+  --foreground: 60 30% 96%;
+  --border: 232 13% 26%;
+  --card: 232 14% 21%;
+  --card-foreground: 60 30% 96%;
+  --card-border: 232 13% 26%;
+  --sidebar: 231 15% 16%;
+  --sidebar-foreground: 60 30% 96%;
+  --sidebar-border: 232 13% 23%;
+  --sidebar-primary: 265 90% 78%;
+  --sidebar-primary-foreground: 231 15% 18%;
+  --sidebar-accent: 232 13% 23%;
+  --sidebar-accent-foreground: 60 30% 96%;
+  --sidebar-ring: 265 90% 78%;
+  --popover: 232 14% 21%;
+  --popover-foreground: 60 30% 96%;
+  --popover-border: 232 13% 26%;
+  --primary: 265 90% 78%;
+  --primary-foreground: 231 15% 10%;
+  --secondary: 232 13% 24%;
+  --secondary-foreground: 60 30% 96%;
+  --muted: 232 13% 22%;
+  --muted-foreground: 233 10% 58%;
+  --accent: 326 100% 74%;
+  --accent-foreground: 231 15% 10%;
+  --destructive: 0 80% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 232 13% 26%;
+  --ring: 265 90% 78%;
+  --button-outline: rgba(255,255,255,.10);
+  --badge-outline: rgba(255,255,255,.05);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(255,255,255,.04);
+  --elevate-2: rgba(255,255,255,.09);
+}
+
+/* ─── NORD ─── arctic blues ─────────────────────────────────────── */
+[data-color-theme="nord"] {
+  --background: 220 16% 22%;
+  --foreground: 218 27% 92%;
+  --border: 220 15% 30%;
+  --card: 222 16% 26%;
+  --card-foreground: 218 27% 92%;
+  --card-border: 220 15% 30%;
+  --sidebar: 220 16% 18%;
+  --sidebar-foreground: 218 27% 92%;
+  --sidebar-border: 220 15% 26%;
+  --sidebar-primary: 213 32% 52%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 220 15% 27%;
+  --sidebar-accent-foreground: 218 27% 92%;
+  --sidebar-ring: 213 32% 52%;
+  --popover: 222 16% 26%;
+  --popover-foreground: 218 27% 92%;
+  --popover-border: 220 15% 30%;
+  --primary: 213 32% 52%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 220 15% 27%;
+  --secondary-foreground: 218 27% 92%;
+  --muted: 220 15% 26%;
+  --muted-foreground: 220 10% 58%;
+  --accent: 179 25% 65%;
+  --accent-foreground: 220 16% 14%;
+  --destructive: 354 42% 56%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 220 15% 30%;
+  --ring: 213 32% 52%;
+  --button-outline: rgba(255,255,255,.10);
+  --badge-outline: rgba(255,255,255,.05);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(255,255,255,.04);
+  --elevate-2: rgba(255,255,255,.09);
+}
+
+/* ─── GRUVBOX ─── earthy retro warmth ──────────────────────────── */
+[data-color-theme="gruvbox"] {
+  --background: 30 8% 15%;
+  --foreground: 43 60% 82%;
+  --border: 30 8% 25%;
+  --card: 30 7% 18%;
+  --card-foreground: 43 60% 82%;
+  --card-border: 30 8% 25%;
+  --sidebar: 30 8% 12%;
+  --sidebar-foreground: 43 60% 82%;
+  --sidebar-border: 30 8% 22%;
+  --sidebar-primary: 43 90% 60%;
+  --sidebar-primary-foreground: 30 8% 10%;
+  --sidebar-accent: 30 8% 21%;
+  --sidebar-accent-foreground: 43 60% 82%;
+  --sidebar-ring: 43 90% 60%;
+  --popover: 30 7% 18%;
+  --popover-foreground: 43 60% 82%;
+  --popover-border: 30 8% 25%;
+  --primary: 43 90% 60%;
+  --primary-foreground: 30 8% 10%;
+  --secondary: 30 8% 22%;
+  --secondary-foreground: 43 60% 82%;
+  --muted: 30 7% 20%;
+  --muted-foreground: 40 20% 52%;
+  --accent: 1 80% 65%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 1 70% 55%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 30 8% 25%;
+  --ring: 43 90% 60%;
+  --button-outline: rgba(255,255,255,.10);
+  --badge-outline: rgba(255,255,255,.05);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(255,255,255,.04);
+  --elevate-2: rgba(255,255,255,.09);
+}
+
+/* ─── MONOKAI ─── the legendary editor theme ────────────────────── */
+[data-color-theme="monokai"] {
+  --background: 210 7% 16%;
+  --foreground: 61 15% 90%;
+  --border: 210 5% 25%;
+  --card: 210 6% 19%;
+  --card-foreground: 61 15% 90%;
+  --card-border: 210 5% 25%;
+  --sidebar: 210 7% 13%;
+  --sidebar-foreground: 61 15% 90%;
+  --sidebar-border: 210 5% 22%;
+  --sidebar-primary: 80 80% 55%;
+  --sidebar-primary-foreground: 210 7% 10%;
+  --sidebar-accent: 210 5% 22%;
+  --sidebar-accent-foreground: 61 15% 90%;
+  --sidebar-ring: 80 80% 55%;
+  --popover: 210 6% 19%;
+  --popover-foreground: 61 15% 90%;
+  --popover-border: 210 5% 25%;
+  --primary: 80 80% 55%;
+  --primary-foreground: 210 7% 10%;
+  --secondary: 210 5% 22%;
+  --secondary-foreground: 61 15% 90%;
+  --muted: 210 5% 20%;
+  --muted-foreground: 210 5% 55%;
+  --accent: 60 90% 68%;
+  --accent-foreground: 210 7% 10%;
+  --destructive: 5 90% 65%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 210 5% 25%;
+  --ring: 80 80% 55%;
+  --button-outline: rgba(255,255,255,.10);
+  --badge-outline: rgba(255,255,255,.05);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(255,255,255,.04);
+  --elevate-2: rgba(255,255,255,.09);
+}
+
+/* ─── BLOOD MOON ─────────────────────────────────────────────────── */
+[data-color-theme="blood-moon"] {
+  --background: 0 30% 4%;
+  --foreground: 0 20% 86%;
+  --border: 0 25% 13%;
+  --card: 0 22% 7%;
+  --card-foreground: 0 20% 86%;
+  --card-border: 0 25% 13%;
+  --sidebar: 0 30% 3%;
+  --sidebar-foreground: 0 20% 86%;
+  --sidebar-border: 0 25% 10%;
+  --sidebar-primary: 0 80% 50%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 0 22% 9%;
+  --sidebar-accent-foreground: 0 20% 86%;
+  --sidebar-ring: 0 80% 50%;
+  --popover: 0 22% 7%;
+  --popover-foreground: 0 20% 86%;
+  --popover-border: 0 25% 13%;
+  --primary: 0 80% 50%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 22% 9%;
+  --secondary-foreground: 0 20% 86%;
+  --muted: 0 18% 9%;
+  --muted-foreground: 0 10% 50%;
+  --accent: 25 90% 55%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 70% 40%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 0 25% 13%;
+  --ring: 0 80% 50%;
+  --button-outline: rgba(255,50,50,.15);
+  --badge-outline: rgba(255,50,50,.08);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(255,50,50,.04);
+  --elevate-2: rgba(255,50,50,.09);
+}
+
+/* ─── 80s NEON ─── hot pink + electric teal on dark ────────────── */
+[data-color-theme="neon-80s"] {
+  --background: 228 30% 7%;
+  --foreground: 0 0% 96%;
+  --border: 228 20% 16%;
+  --card: 228 25% 10%;
+  --card-foreground: 0 0% 96%;
+  --card-border: 228 20% 16%;
+  --sidebar: 228 30% 5%;
+  --sidebar-foreground: 0 0% 96%;
+  --sidebar-border: 228 20% 13%;
+  --sidebar-primary: 172 95% 48%;
+  --sidebar-primary-foreground: 228 30% 6%;
+  --sidebar-accent: 228 20% 12%;
+  --sidebar-accent-foreground: 0 0% 96%;
+  --sidebar-ring: 172 95% 48%;
+  --popover: 228 25% 10%;
+  --popover-foreground: 0 0% 96%;
+  --popover-border: 228 20% 16%;
+  --primary: 172 95% 48%;
+  --primary-foreground: 228 30% 6%;
+  --secondary: 228 20% 13%;
+  --secondary-foreground: 0 0% 96%;
+  --muted: 228 18% 13%;
+  --muted-foreground: 228 12% 54%;
+  --accent: 315 100% 60%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 85% 58%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 228 20% 16%;
+  --ring: 172 95% 48%;
+  --button-outline: rgba(0,245,212,.15);
+  --badge-outline: rgba(0,245,212,.08);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(0,245,212,.04);
+  --elevate-2: rgba(0,245,212,.09);
+}
+
+/* ─── SEPIA ─── warm parchment ──────────────────────────────────── */
+[data-color-theme="sepia"] {
+  --background: 34 40% 91%;
+  --foreground: 24 40% 16%;
+  --border: 32 22% 78%;
+  --card: 36 35% 96%;
+  --card-foreground: 24 40% 16%;
+  --card-border: 32 22% 78%;
+  --sidebar: 34 35% 88%;
+  --sidebar-foreground: 24 40% 16%;
+  --sidebar-border: 32 22% 76%;
+  --sidebar-primary: 25 70% 38%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 34 28% 86%;
+  --sidebar-accent-foreground: 24 40% 16%;
+  --sidebar-ring: 25 70% 38%;
+  --popover: 36 35% 96%;
+  --popover-foreground: 24 40% 16%;
+  --popover-border: 32 22% 78%;
+  --primary: 25 70% 38%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 34 28% 86%;
+  --secondary-foreground: 24 40% 16%;
+  --muted: 34 24% 87%;
+  --muted-foreground: 28 16% 46%;
+  --accent: 15 72% 46%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 70% 46%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 32 22% 78%;
+  --ring: 25 70% 38%;
+  --button-outline: rgba(0,0,0,.10);
+  --badge-outline: rgba(0,0,0,.05);
+  --opaque-button-border-intensity: -8;
+  --elevate-1: rgba(0,0,0,.03);
+  --elevate-2: rgba(0,0,0,.08);
+}
+
+/* ─── BUBBLEGUM ─── soft pastel pop ─────────────────────────────── */
+[data-color-theme="bubblegum"] {
+  --background: 300 50% 97%;
+  --foreground: 280 40% 22%;
+  --border: 300 30% 86%;
+  --card: 300 40% 99%;
+  --card-foreground: 280 40% 22%;
+  --card-border: 300 30% 86%;
+  --sidebar: 300 45% 96%;
+  --sidebar-foreground: 280 40% 22%;
+  --sidebar-border: 300 30% 86%;
+  --sidebar-primary: 310 70% 65%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 300 25% 92%;
+  --sidebar-accent-foreground: 280 40% 22%;
+  --sidebar-ring: 310 70% 65%;
+  --popover: 300 40% 99%;
+  --popover-foreground: 280 40% 22%;
+  --popover-border: 300 30% 86%;
+  --primary: 310 70% 65%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 300 25% 92%;
+  --secondary-foreground: 280 40% 22%;
+  --muted: 300 20% 93%;
+  --muted-foreground: 290 12% 50%;
+  --accent: 200 70% 68%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 72% 50%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 300 30% 86%;
+  --ring: 310 70% 65%;
+  --button-outline: rgba(0,0,0,.10);
+  --badge-outline: rgba(0,0,0,.05);
+  --opaque-button-border-intensity: -8;
+  --elevate-1: rgba(0,0,0,.03);
+  --elevate-2: rgba(0,0,0,.08);
+}
+
 @layer base {
   * { @apply border-border; }
   body { @apply font-sans antialiased bg-background text-foreground; }

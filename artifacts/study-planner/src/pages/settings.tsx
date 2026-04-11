@@ -115,39 +115,56 @@ export default function Settings() {
           <h2 className="text-xl font-semibold">Colour Theme</h2>
           <p className="text-sm text-muted-foreground">Pick the overall look of the app.</p>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {COLOR_THEMES.map((t) => {
-            const active = colorTheme === t.id;
-            return (
-              <button
-                key={t.id}
-                onClick={() => setColorTheme(t.id as ColorThemeId)}
-                className={`relative rounded-xl border-2 overflow-hidden transition-all text-left group ${
-                  active ? "border-primary shadow-lg scale-[1.02]" : "border-border hover:border-primary/50"
-                }`}
-              >
-                <div
-                  className="h-14 w-full flex items-end px-3 pb-2"
-                  style={{ backgroundColor: t.preview.bg }}
-                >
-                  <div
-                    className="h-4 w-16 rounded-full"
-                    style={{ backgroundColor: t.preview.primary }}
-                  />
-                </div>
-                <div className="px-3 py-2 bg-card border-t border-border">
-                  <p className="text-xs font-semibold">{t.name}</p>
-                  <p className="text-[10px] text-muted-foreground">{t.description}</p>
-                </div>
-                {active && (
-                  <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
-                    <Check className="h-3 w-3 text-primary-foreground" />
-                  </div>
-                )}
-              </button>
-            );
-          })}
-        </div>
+        {(["Classic", "Terminal", "Editor Famous", "Wild & Crazy", "Nature", "Vibrant"] as const).map((groupLabel) => {
+          const tagMap: Record<string, string | undefined> = {
+            "Classic": undefined,
+            "Terminal": "terminal",
+            "Editor Famous": "editor",
+            "Wild & Crazy": "wild",
+            "Nature": "nature",
+            "Vibrant": "vibrant",
+          };
+          const tag = tagMap[groupLabel];
+          const grouped = COLOR_THEMES.filter((t) =>
+            tag === undefined ? !t.tag : t.tag === tag
+          );
+          if (!grouped.length) return null;
+          return (
+            <div key={groupLabel} className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{groupLabel}</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {grouped.map((t) => {
+                  const active = colorTheme === t.id;
+                  return (
+                    <button
+                      key={t.id}
+                      onClick={() => setColorTheme(t.id as ColorThemeId)}
+                      className={`relative rounded-xl border-2 overflow-hidden transition-all text-left ${
+                        active ? "border-primary shadow-md scale-[1.02]" : "border-border hover:border-primary/40"
+                      }`}
+                    >
+                      <div
+                        className="h-12 w-full flex items-end px-3 pb-2"
+                        style={{ backgroundColor: t.preview.bg }}
+                      >
+                        <div className="h-3 w-14 rounded-full" style={{ backgroundColor: t.preview.primary }} />
+                      </div>
+                      <div className="px-3 py-2 bg-card border-t border-border">
+                        <p className="text-xs font-semibold">{t.name}</p>
+                        <p className="text-[10px] text-muted-foreground leading-tight">{t.description}</p>
+                      </div>
+                      {active && (
+                        <div className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
+                          <Check className="h-2.5 w-2.5 text-primary-foreground" />
+                        </div>
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
       </motion.div>
 
       {/* ── Light / Dark ───────────────────────────────────────────── */}
