@@ -11,6 +11,7 @@ import Tasks from "./pages/tasks";
 import Schedule from "./pages/schedule";
 import Timer from "./pages/timer";
 import Progress from "./pages/progress";
+import Settings from "./pages/settings";
 
 const queryClient = new QueryClient();
 
@@ -23,6 +24,7 @@ function Router() {
         <Route path="/schedule" component={Schedule} />
         <Route path="/timer" component={Timer} />
         <Route path="/progress" component={Progress} />
+        <Route path="/settings" component={Settings} />
         <Route component={NotFound} />
       </Switch>
     </AppLayout>
