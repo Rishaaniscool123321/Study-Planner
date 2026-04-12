@@ -17,6 +17,7 @@
     "drizzle-orm": "catalog:",
     "express": "^5",
     "openid-client": "^6.8.2",
+    "otpauth": "^9.5.0",
     "pino": "^9",
     "pino-http": "^10"
   },
