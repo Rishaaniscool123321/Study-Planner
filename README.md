@@ -14,37 +14,6 @@ It combines task management, scheduling, analytics, a focus timer, customization
 
 ---
 
-## 🖼️ Preview
-
-### Dashboard
-![Dashboard](./assets/dashboard.png)
-
-### Tasks
-![Tasks](./assets/tasks.png)
-
-### Subjects
-![Subjects](./assets/subjects.png)
-
-### Schedule
-![Schedule](./assets/schedule.png)
-
-### Focus Timer
-![Timer](./assets/timer.png)
-
-### Progress Tracking
-![Progress](./assets/progress.png)
-
-### Password Vault
-![Passwords](./assets/passwords.png)
-
-### Customization
-![Customize](./assets/customize.png)
-
-### Study AI
-![Study AI](./assets/study-ai.png)
-
----
-
 ## 🧠 Core Features
 
 ### 📊 Dashboard
