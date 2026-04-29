@@ -7,6 +7,34 @@ export type Density = "compact" | "comfortable" | "spacious";
 export type SidebarPosition = "left" | "right";
 export type SidebarSize = "icons" | "normal" | "wide";
 
+export type DashboardWidgetId =
+  | "stats"
+  | "goal"
+  | "weekly"
+  | "schedule"
+  | "upNext"
+  | "timer";
+
+export const DEFAULT_DASHBOARD_WIDGETS: Record<DashboardWidgetId, boolean> = {
+  stats: true,
+  goal: true,
+  weekly: true,
+  schedule: true,
+  upNext: true,
+  timer: true,
+};
+
+export const DASHBOARD_WIDGET_LABELS: Record<DashboardWidgetId, string> = {
+  stats: "Stat cards (streak, time, tasks, completion)",
+  goal: "Today's study goal",
+  weekly: "Weekly activity chart",
+  schedule: "Today's logged sessions",
+  upNext: "Up Next tasks",
+  timer: "Quick Timer",
+};
+
+export type PresetId = "default" | "focus" | "cozy" | "hacker" | "pastel";
+
 interface CustomizationState {
   // Theme
   theme: LightDark;
@@ -34,6 +62,19 @@ interface CustomizationState {
   // Motion
   reduceMotion: boolean;
   setReduceMotion: (v: boolean) => void;
+  // Daily goal
+  dailyGoalMinutes: number;
+  setDailyGoalMinutes: (n: number) => void;
+  // Dashboard widgets
+  dashboardWidgets: Record<DashboardWidgetId, boolean>;
+  setDashboardWidget: (id: DashboardWidgetId, enabled: boolean) => void;
+  // Notifications
+  timerSoundEnabled: boolean;
+  setTimerSoundEnabled: (v: boolean) => void;
+  timerNotificationsEnabled: boolean;
+  setTimerNotificationsEnabled: (v: boolean) => void;
+  // Presets
+  applyPreset: (id: PresetId) => void;
   // Reset
   resetCustomization: () => void;
 }
@@ -51,6 +92,10 @@ const KEYS = {
   sidebarPosition: "study-planner-sidebar-position",
   sidebarSize: "study-planner-sidebar-size",
   reduceMotion: "study-planner-reduce-motion",
+  dailyGoal: "study-planner-daily-goal-minutes",
+  dashboardWidgets: "study-planner-dashboard-widgets",
+  timerSound: "study-planner-timer-sound",
+  timerNotifications: "study-planner-timer-notifications",
 };
 
 function readLS<T>(key: string, fallback: T): T {
@@ -84,6 +129,12 @@ export function ThemeProvider({
   const [sidebarPosition, setSidebarPositionState] = useState<SidebarPosition>(() => readLS(KEYS.sidebarPosition, "left" as SidebarPosition));
   const [sidebarSize, setSidebarSizeState] = useState<SidebarSize>(() => readLS(KEYS.sidebarSize, "normal" as SidebarSize));
   const [reduceMotion, setReduceMotionState] = useState<boolean>(() => readLS(KEYS.reduceMotion, false));
+  const [dailyGoalMinutes, setDailyGoalMinutesState] = useState<number>(() => readLS(KEYS.dailyGoal, 60));
+  const [dashboardWidgets, setDashboardWidgetsState] = useState<Record<DashboardWidgetId, boolean>>(
+    () => ({ ...DEFAULT_DASHBOARD_WIDGETS, ...readLS(KEYS.dashboardWidgets, {} as Partial<Record<DashboardWidgetId, boolean>>) })
+  );
+  const [timerSoundEnabled, setTimerSoundEnabledState] = useState<boolean>(() => readLS(KEYS.timerSound, true));
+  const [timerNotificationsEnabled, setTimerNotificationsEnabledState] = useState<boolean>(() => readLS(KEYS.timerNotifications, true));
 
   // Apply light/dark class
   useEffect(() => {
@@ -192,6 +243,42 @@ export function ThemeProvider({
   const setSidebarPosition = (p: SidebarPosition) => { writeLS(KEYS.sidebarPosition, p); setSidebarPositionState(p); };
   const setSidebarSize = (s: SidebarSize) => { writeLS(KEYS.sidebarSize, s); setSidebarSizeState(s); };
   const setReduceMotion = (v: boolean) => { writeLS(KEYS.reduceMotion, v); setReduceMotionState(v); };
+  const setDailyGoalMinutes = (n: number) => {
+    const clamped = Math.max(5, Math.min(480, Math.round(n)));
+    writeLS(KEYS.dailyGoal, clamped);
+    setDailyGoalMinutesState(clamped);
+  };
+  const setDashboardWidget = (id: DashboardWidgetId, enabled: boolean) => {
+    setDashboardWidgetsState((prev) => {
+      const next = { ...prev, [id]: enabled };
+      writeLS(KEYS.dashboardWidgets, next);
+      return next;
+    });
+  };
+  const setTimerSoundEnabled = (v: boolean) => { writeLS(KEYS.timerSound, v); setTimerSoundEnabledState(v); };
+  const setTimerNotificationsEnabled = (v: boolean) => { writeLS(KEYS.timerNotifications, v); setTimerNotificationsEnabledState(v); };
+
+  const applyPreset = useCallback((id: PresetId) => {
+    const presets: Record<PresetId, {
+      colorTheme: ColorThemeId; font: FontChoice; fontScale: number;
+      radius: number; density: Density; reduceMotion: boolean;
+      theme?: LightDark;
+    }> = {
+      default: { colorTheme: "default" as ColorThemeId, font: "inter", fontScale: 1, radius: 0.75, density: "comfortable", reduceMotion: false, theme: "system" },
+      focus:   { colorTheme: "default" as ColorThemeId, font: "inter", fontScale: 1, radius: 0.5, density: "compact", reduceMotion: true, theme: "dark" },
+      cozy:    { colorTheme: "coffee" as ColorThemeId, font: "serif", fontScale: 1.05, radius: 1.0, density: "spacious", reduceMotion: false, theme: "light" },
+      hacker:  { colorTheme: "matrix" as ColorThemeId, font: "mono", fontScale: 0.95, radius: 0.25, density: "compact", reduceMotion: false, theme: "dark" },
+      pastel:  { colorTheme: "cherry-blossom" as ColorThemeId, font: "rounded", fontScale: 1.05, radius: 1.25, density: "comfortable", reduceMotion: false, theme: "light" },
+    };
+    const p = presets[id];
+    setColorTheme(p.colorTheme);
+    setFont(p.font);
+    setFontScale(p.fontScale);
+    setRadius(p.radius);
+    setDensity(p.density);
+    setReduceMotion(p.reduceMotion);
+    if (p.theme) setTheme(p.theme);
+  }, []);
 
   const saveCustomTheme = useCallback((t: CustomTheme) => {
     setCustomThemes((prev) => {
@@ -216,6 +303,10 @@ export function ThemeProvider({
     setFontState("inter"); setFontScaleState(1); setRadiusState(0.75);
     setDensityState("comfortable"); setSidebarPositionState("left"); setSidebarSizeState("normal");
     setReduceMotionState(false);
+    setDailyGoalMinutesState(60);
+    setDashboardWidgetsState({ ...DEFAULT_DASHBOARD_WIDGETS });
+    setTimerSoundEnabledState(true);
+    setTimerNotificationsEnabledState(true);
     document.documentElement.style.removeProperty("--radius");
     document.documentElement.style.removeProperty("font-size");
   }, []);
@@ -226,8 +317,13 @@ export function ThemeProvider({
     font, setFont, fontScale, setFontScale,
     radius, setRadius, density, setDensity,
     sidebarPosition, setSidebarPosition, sidebarSize, setSidebarSize,
-    reduceMotion, setReduceMotion, resetCustomization,
-  }), [theme, colorTheme, customThemes, font, fontScale, radius, density, sidebarPosition, sidebarSize, reduceMotion, saveCustomTheme, deleteCustomTheme, resetCustomization]);
+    reduceMotion, setReduceMotion,
+    dailyGoalMinutes, setDailyGoalMinutes,
+    dashboardWidgets, setDashboardWidget,
+    timerSoundEnabled, setTimerSoundEnabled,
+    timerNotificationsEnabled, setTimerNotificationsEnabled,
+    applyPreset, resetCustomization,
+  }), [theme, colorTheme, customThemes, font, fontScale, radius, density, sidebarPosition, sidebarSize, reduceMotion, dailyGoalMinutes, dashboardWidgets, timerSoundEnabled, timerNotificationsEnabled, applyPreset, saveCustomTheme, deleteCustomTheme, resetCustomization]);
 
   return <ThemeProviderContext.Provider value={value}>{children}</ThemeProviderContext.Provider>;
 }

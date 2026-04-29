@@ -19,6 +19,65 @@ import {
   getGetStatsBySubjectQueryKey,
 } from "@workspace/api-client-react";
 import { useToast } from "@/hooks/use-toast";
+import { useTheme } from "@/components/theme-provider";
+
+const DEFAULT_DOC_TITLE = "Study Planner";
+
+function playChime() {
+  try {
+    const Ctx = window.AudioContext || (window as any).webkitAudioContext;
+    if (!Ctx) return;
+    const ctx = new Ctx();
+    const now = ctx.currentTime;
+    // Three short ascending tones
+    const tones = [
+      { freq: 660, start: 0,    dur: 0.18 },
+      { freq: 880, start: 0.22, dur: 0.18 },
+      { freq: 1100, start: 0.44, dur: 0.32 },
+    ];
+    for (const t of tones) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = t.freq;
+      gain.gain.setValueAtTime(0.0001, now + t.start);
+      gain.gain.exponentialRampToValueAtTime(0.25, now + t.start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + t.start + t.dur);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now + t.start);
+      osc.stop(now + t.start + t.dur + 0.05);
+    }
+    setTimeout(() => { try { ctx.close(); } catch { /* ignore */ } }, 1500);
+  } catch {
+    /* audio failed silently */
+  }
+}
+
+function showNotification(title: string, body: string) {
+  if (typeof window === "undefined" || !("Notification" in window)) return;
+  if (Notification.permission === "granted") {
+    try {
+      new Notification(title, {
+        body,
+        tag: "study-planner-timer",
+        icon: "/favicon.ico",
+      });
+    } catch { /* ignore */ }
+  }
+}
+
+async function ensureNotificationPermission(): Promise<boolean> {
+  if (typeof window === "undefined" || !("Notification" in window)) return false;
+  if (Notification.permission === "granted") return true;
+  if (Notification.permission === "denied") return false;
+  try {
+    const result = await Notification.requestPermission();
+    return result === "granted";
+  } catch {
+    return false;
+  }
+}
 
 export interface TimerPreset {
   label: string;
@@ -75,6 +134,7 @@ export function TimerProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
   const { toast } = useToast();
   const createSession = useCreateSession();
+  const { timerSoundEnabled, timerNotificationsEnabled } = useTheme();
 
   const preset = TIMER_PRESETS[presetIdx];
   const totalSeconds = preset.minutes * 60;
@@ -95,6 +155,24 @@ export function TimerProvider({ children }: { children: ReactNode }) {
     const date = sessionDateRef.current;
     const startedPreset = sessionPresetRef.current;
     const startedSubject = sessionSubjectIdRef.current;
+
+    // Audio + browser notification feedback (non-blocking)
+    if (startedPreset) {
+      if (timerSoundEnabled) playChime();
+      if (timerNotificationsEnabled) {
+        showNotification(
+          `${startedPreset.label} complete!`,
+          `${startedPreset.minutes} minutes finished. Great work!`,
+        );
+      }
+      // Briefly flash the tab title even if user is on another tab
+      try {
+        const original = DEFAULT_DOC_TITLE;
+        document.title = `Done! · ${startedPreset.label} complete`;
+        setTimeout(() => { document.title = original; }, 6000);
+      } catch { /* ignore */ }
+    }
+
     if (startTime && date && startedPreset) {
       createSession.mutate(
         {
@@ -125,7 +203,7 @@ export function TimerProvider({ children }: { children: ReactNode }) {
     sessionPresetRef.current = null;
     sessionSubjectIdRef.current = "";
     setSeconds(totalSeconds);
-  }, [createSession, invalidate, toast, totalSeconds]);
+  }, [createSession, invalidate, toast, totalSeconds, timerSoundEnabled, timerNotificationsEnabled]);
 
   useEffect(() => {
     if (running) {
@@ -150,6 +228,25 @@ export function TimerProvider({ children }: { children: ReactNode }) {
     };
   }, [running, handleComplete]);
 
+  // Sync the browser tab title with the running countdown
+  useEffect(() => {
+    if (!running) {
+      // Restore default title when paused/stopped (handleComplete may set it briefly)
+      if (document.title.startsWith("⏱")) {
+        document.title = DEFAULT_DOC_TITLE;
+      }
+      return;
+    }
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    document.title = `⏱ ${pad(m)}:${pad(s)} · ${preset.label}`;
+  }, [running, seconds, preset.label]);
+
+  // Restore title on unmount
+  useEffect(() => {
+    return () => { document.title = DEFAULT_DOC_TITLE; };
+  }, []);
+
   const start = useCallback(() => {
     if (!sessionStartTimeRef.current) {
       sessionStartTimeRef.current = format(new Date(), "HH:mm");
@@ -157,8 +254,12 @@ export function TimerProvider({ children }: { children: ReactNode }) {
       sessionPresetRef.current = preset;
       sessionSubjectIdRef.current = subjectId;
     }
+    // Ask the browser for notification permission on first start (no-op if already decided)
+    if (timerNotificationsEnabled) {
+      void ensureNotificationPermission();
+    }
     setRunning(true);
-  }, [preset, subjectId]);
+  }, [preset, subjectId, timerNotificationsEnabled]);
 
   const pause = useCallback(() => setRunning(false), []);
 
