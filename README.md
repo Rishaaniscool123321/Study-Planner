@@ -130,6 +130,7 @@ cd Study-Planner
 npm install
 npm run dev
 
-then in your web brower type
+### **After Local Setup**
+type in your web brower
   http://localhost:5173
 
