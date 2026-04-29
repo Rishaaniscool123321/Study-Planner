@@ -8,6 +8,7 @@ import {
   Settings,
   Palette,
   KeyRound,
+  BookOpen,
   LogOut,
   User as UserIcon,
 } from "lucide-react";
@@ -31,6 +32,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const navItems = [
     { href: "/", label: "Dashboard", icon: LayoutDashboard },
     { href: "/tasks", label: "Tasks", icon: CheckSquare },
+    { href: "/subjects", label: "Subjects", icon: BookOpen },
     { href: "/schedule", label: "Schedule", icon: Calendar },
     { href: "/timer", label: "Timer", icon: Clock },
     { href: "/progress", label: "Progress", icon: TrendingUp },

@@ -17,6 +17,7 @@ import Progress from "./pages/progress";
 import Settings from "./pages/settings";
 import Customize from "./pages/customize";
 import Passwords from "./pages/passwords";
+import Subjects from "./pages/subjects";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ function AuthedRouter() {
       <Switch>
         <Route path="/" component={Dashboard} />
         <Route path="/tasks" component={Tasks} />
+        <Route path="/subjects" component={Subjects} />
         <Route path="/schedule" component={Schedule} />
         <Route path="/timer" component={Timer} />
         <Route path="/progress" component={Progress} />

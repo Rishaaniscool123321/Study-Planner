@@ -1,6 +1,6 @@
-import { Router, type IRouter } from "express";
+import { Router, type IRouter, type Request, type Response } from "express";
 import { eq, and } from "drizzle-orm";
-import { db, studySessionsTable } from "@workspace/db";
+import { db, studySessionsTable, subjectsTable } from "@workspace/db";
 import {
   ListSessionsQueryParams,
   CreateSessionBody,
@@ -13,39 +13,80 @@ import {
 
 const router: IRouter = Router();
 
-router.get("/sessions", async (req, res): Promise<void> => {
+function requireAuth(req: Request, res: Response): boolean {
+  if (!req.isAuthenticated()) {
+    res.status(401).json({ error: "Unauthorized" });
+    return false;
+  }
+  return true;
+}
+
+async function ensureSubjectOwned(
+  subjectId: number | null | undefined,
+  userId: string,
+): Promise<boolean> {
+  if (subjectId == null) return true;
+  const [row] = await db
+    .select({ id: subjectsTable.id })
+    .from(subjectsTable)
+    .where(and(eq(subjectsTable.id, subjectId), eq(subjectsTable.userId, userId)));
+  return !!row;
+}
+
+router.get("/sessions", async (req: Request, res: Response): Promise<void> => {
+  if (!requireAuth(req, res)) return;
   const qp = ListSessionsQueryParams.safeParse(req.query);
   if (!qp.success) {
     res.status(400).json({ error: qp.error.message });
     return;
   }
 
-  const conditions = [];
+  const conditions = [eq(studySessionsTable.userId, req.user!.id)];
   if (qp.data.subjectId != null) {
     conditions.push(eq(studySessionsTable.subjectId, qp.data.subjectId));
   }
   if (qp.data.date != null) {
-    conditions.push(eq(studySessionsTable.date, qp.data.date));
+    const dateStr =
+      qp.data.date instanceof Date
+        ? qp.data.date.toISOString().slice(0, 10)
+        : qp.data.date;
+    conditions.push(eq(studySessionsTable.date, dateStr));
   }
 
-  const sessions = conditions.length > 0
-    ? await db.select().from(studySessionsTable).where(and(...conditions)).orderBy(studySessionsTable.date)
-    : await db.select().from(studySessionsTable).orderBy(studySessionsTable.date);
+  const sessions = await db
+    .select()
+    .from(studySessionsTable)
+    .where(and(...conditions))
+    .orderBy(studySessionsTable.date);
 
   res.json(ListSessionsResponse.parse(sessions));
 });
 
-router.post("/sessions", async (req, res): Promise<void> => {
+router.post("/sessions", async (req: Request, res: Response): Promise<void> => {
+  if (!requireAuth(req, res)) return;
   const parsed = CreateSessionBody.safeParse(req.body);
   if (!parsed.success) {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
-  const [session] = await db.insert(studySessionsTable).values(parsed.data).returning();
+  if (!(await ensureSubjectOwned(parsed.data.subjectId, req.user!.id))) {
+    res.status(400).json({ error: "Invalid subjectId" });
+    return;
+  }
+  const insertData = {
+    ...parsed.data,
+    date:
+      parsed.data.date instanceof Date
+        ? parsed.data.date.toISOString().slice(0, 10)
+        : parsed.data.date,
+    userId: req.user!.id,
+  };
+  const [session] = await db.insert(studySessionsTable).values(insertData).returning();
   res.status(201).json(session);
 });
 
-router.patch("/sessions/:id", async (req, res): Promise<void> => {
+router.patch("/sessions/:id", async (req: Request, res: Response): Promise<void> => {
+  if (!requireAuth(req, res)) return;
   const params = UpdateSessionParams.safeParse(req.params);
   if (!params.success) {
     res.status(400).json({ error: params.error.message });
@@ -56,10 +97,23 @@ router.patch("/sessions/:id", async (req, res): Promise<void> => {
     res.status(400).json({ error: parsed.error.message });
     return;
   }
+  if (parsed.data.subjectId !== undefined && !(await ensureSubjectOwned(parsed.data.subjectId, req.user!.id))) {
+    res.status(400).json({ error: "Invalid subjectId" });
+    return;
+  }
+  const updateData: Record<string, unknown> = {
+    ...parsed.data,
+    ...(parsed.data.date !== undefined && {
+      date:
+        parsed.data.date instanceof Date
+          ? parsed.data.date.toISOString().slice(0, 10)
+          : parsed.data.date,
+    }),
+  };
   const [session] = await db
     .update(studySessionsTable)
-    .set(parsed.data)
-    .where(eq(studySessionsTable.id, params.data.id))
+    .set(updateData)
+    .where(and(eq(studySessionsTable.id, params.data.id), eq(studySessionsTable.userId, req.user!.id)))
     .returning();
   if (!session) {
     res.status(404).json({ error: "Session not found" });
@@ -68,13 +122,16 @@ router.patch("/sessions/:id", async (req, res): Promise<void> => {
   res.json(UpdateSessionResponse.parse(session));
 });
 
-router.delete("/sessions/:id", async (req, res): Promise<void> => {
+router.delete("/sessions/:id", async (req: Request, res: Response): Promise<void> => {
+  if (!requireAuth(req, res)) return;
   const params = DeleteSessionParams.safeParse(req.params);
   if (!params.success) {
     res.status(400).json({ error: params.error.message });
     return;
   }
-  await db.delete(studySessionsTable).where(eq(studySessionsTable.id, params.data.id));
+  await db
+    .delete(studySessionsTable)
+    .where(and(eq(studySessionsTable.id, params.data.id), eq(studySessionsTable.userId, req.user!.id)));
   res.sendStatus(204);
 });
 

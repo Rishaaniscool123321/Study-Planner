@@ -1,5 +1,5 @@
-import { Router, type IRouter } from "express";
-import { eq, and, gte, sql } from "drizzle-orm";
+import { Router, type IRouter, type Request, type Response } from "express";
+import { eq, and } from "drizzle-orm";
 import { db, tasksTable, studySessionsTable, subjectsTable } from "@workspace/db";
 import {
   GetStatsSummaryResponse,
@@ -9,14 +9,24 @@ import {
 
 const router: IRouter = Router();
 
-router.get("/stats/summary", async (req, res): Promise<void> => {
+function requireAuth(req: Request, res: Response): boolean {
+  if (!req.isAuthenticated()) {
+    res.status(401).json({ error: "Unauthorized" });
+    return false;
+  }
+  return true;
+}
+
+router.get("/stats/summary", async (req: Request, res: Response): Promise<void> => {
+  if (!requireAuth(req, res)) return;
+  const userId = req.user!.id;
   const today = new Date();
   const todayStr = today.toISOString().split("T")[0];
   const weekAgo = new Date(today);
   weekAgo.setDate(weekAgo.getDate() - 7);
   const weekAgoStr = weekAgo.toISOString().split("T")[0];
 
-  const allTasks = await db.select().from(tasksTable);
+  const allTasks = await db.select().from(tasksTable).where(eq(tasksTable.userId, userId));
   const totalTasks = allTasks.length;
   const completedTasks = allTasks.filter((t) => t.completed).length;
   const pendingTasks = totalTasks - completedTasks;
@@ -25,7 +35,7 @@ router.get("/stats/summary", async (req, res): Promise<void> => {
   ).length;
   const completionRate = totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0;
 
-  const allSessions = await db.select().from(studySessionsTable);
+  const allSessions = await db.select().from(studySessionsTable).where(eq(studySessionsTable.userId, userId));
   const totalStudyMinutes = allSessions.reduce((acc, s) => acc + (s.durationMinutes ?? 0), 0);
   const weekSessions = allSessions.filter((s) => s.date >= weekAgoStr);
   const weekStudyMinutes = weekSessions.reduce((acc, s) => acc + (s.durationMinutes ?? 0), 0);
@@ -44,10 +54,12 @@ router.get("/stats/summary", async (req, res): Promise<void> => {
   }));
 });
 
-router.get("/stats/streak", async (_req, res): Promise<void> => {
+router.get("/stats/streak", async (req: Request, res: Response): Promise<void> => {
+  if (!requireAuth(req, res)) return;
   const sessions = await db
     .select({ date: studySessionsTable.date })
     .from(studySessionsTable)
+    .where(eq(studySessionsTable.userId, req.user!.id))
     .orderBy(studySessionsTable.date);
 
   const uniqueDates = [...new Set(sessions.map((s) => s.date))].sort();
@@ -57,7 +69,7 @@ router.get("/stats/streak", async (_req, res): Promise<void> => {
   let currentStreak = 0;
   let longestStreak = 0;
   let streak = 0;
-  let lastStudyDate: string | null = uniqueDates.length > 0 ? uniqueDates[uniqueDates.length - 1] : null;
+  const lastStudyDate: string | null = uniqueDates.length > 0 ? uniqueDates[uniqueDates.length - 1] : null;
 
   for (let i = 0; i < uniqueDates.length; i++) {
     if (i === 0) {
@@ -94,10 +106,12 @@ router.get("/stats/streak", async (_req, res): Promise<void> => {
   }));
 });
 
-router.get("/stats/by-subject", async (_req, res): Promise<void> => {
-  const subjects = await db.select().from(subjectsTable);
-  const allTasks = await db.select().from(tasksTable);
-  const allSessions = await db.select().from(studySessionsTable);
+router.get("/stats/by-subject", async (req: Request, res: Response): Promise<void> => {
+  if (!requireAuth(req, res)) return;
+  const userId = req.user!.id;
+  const subjects = await db.select().from(subjectsTable).where(eq(subjectsTable.userId, userId));
+  const allTasks = await db.select().from(tasksTable).where(eq(tasksTable.userId, userId));
+  const allSessions = await db.select().from(studySessionsTable).where(eq(studySessionsTable.userId, userId));
 
   const result = subjects.map((subject) => {
     const subjectTasks = allTasks.filter((t) => t.subjectId === subject.id);
@@ -120,5 +134,8 @@ router.get("/stats/by-subject", async (_req, res): Promise<void> => {
 
   res.json(GetStatsBySubjectResponse.parse(result));
 });
+
+// Suppress unused import warning for `and` if linter complains
+void and;
 
 export default router;

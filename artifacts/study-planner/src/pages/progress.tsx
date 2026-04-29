@@ -1,7 +1,8 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import {
   TrendingUp, Clock, CheckCircle2, Flame, Award, Target, BarChart3, CalendarDays,
+  ChevronDown,
 } from "lucide-react";
 import { format, subDays, startOfDay, parseISO, isSameDay } from "date-fns";
 import {
@@ -13,12 +14,14 @@ import {
   useGetStreak,
   useGetStatsBySubject,
   useListSessions,
+  useListTasks,
 } from "@workspace/api-client-react";
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress as ProgressBar } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { useTheme } from "@/components/theme-provider";
 
 function minutesToHoursLabel(mins: number) {
@@ -87,13 +90,40 @@ export default function Progress() {
   const { data: streak, isLoading: loadingStreak } = useGetStreak();
   const { data: subjectStats, isLoading: loadingSubjects } = useGetStatsBySubject();
   const { data: sessions, isLoading: loadingSessions } = useListSessions();
+  const { data: tasks } = useListTasks();
+  const [openCard, setOpenCard] = useState<string | null>(null);
 
   const dailyMinutes14 = useMemo(() => buildDailyMinutes(sessions, 14), [sessions]);
+  const dailyMinutes7 = useMemo(() => buildDailyMinutes(sessions, 7), [sessions]);
   const heatmap = useMemo(() => buildHeatmap(sessions, 12), [sessions]);
+
+  const todayKey = format(new Date(), "yyyy-MM-dd");
+  const todaySessions = useMemo(
+    () => (sessions ?? []).filter((s) => s.date === todayKey),
+    [sessions, todayKey],
+  );
+
+  const overdueTasks = useMemo(
+    () => (tasks ?? []).filter((t) => !t.completed && t.dueDate != null && t.dueDate < todayKey),
+    [tasks, todayKey],
+  );
+
+  const tasksByPriority = useMemo(() => {
+    const buckets = { high: { done: 0, total: 0 }, medium: { done: 0, total: 0 }, low: { done: 0, total: 0 } };
+    for (const t of tasks ?? []) {
+      const p = (t.priority as "high" | "medium" | "low") ?? "medium";
+      if (!buckets[p]) continue;
+      buckets[p].total++;
+      if (t.completed) buckets[p].done++;
+    }
+    return buckets;
+  }, [tasks]);
 
   const todayMinutes = stats?.todayStudyMinutes ?? 0;
   const goalPct = Math.min(100, Math.round((todayMinutes / dailyGoalMinutes) * 100));
   const goalMet = todayMinutes >= dailyGoalMinutes;
+
+  const max7 = Math.max(1, ...dailyMinutes7.map((d) => d.minutes));
 
   const totalHeatMins = useMemo(
     () => heatmap.flat().reduce((acc, d) => acc + d.minutes, 0),
@@ -122,99 +152,332 @@ export default function Progress() {
         </p>
       </motion.div>
 
-      {/* TODAY'S GOAL */}
+      {/* TODAY'S GOAL — expandable */}
       <motion.div variants={itemVariants}>
-        <Card className={goalMet ? "border-green-300 dark:border-green-800" : ""}>
-          <CardHeader className="pb-3">
-            <div className="flex items-center justify-between flex-wrap gap-2">
-              <div className="flex items-center gap-2">
-                <Target className={`h-5 w-5 ${goalMet ? "text-green-600 dark:text-green-500" : "text-primary"}`} />
-                <CardTitle className="text-base">Today's study goal</CardTitle>
-              </div>
-              {goalMet && (
-                <Badge className="bg-green-600 hover:bg-green-600 text-white">
-                  <CheckCircle2 size={12} className="mr-1" /> Goal complete!
-                </Badge>
-              )}
-            </div>
-          </CardHeader>
-          <CardContent className="space-y-2">
-            {loadingStats ? (
-              <Skeleton className="h-6 w-40" />
-            ) : (
-              <>
-                <div className="flex items-baseline justify-between">
-                  <span className="text-2xl font-bold">
-                    {minutesToHoursLabel(todayMinutes)}
-                    <span className="text-base font-normal text-muted-foreground"> / {minutesToHoursLabel(dailyGoalMinutes)}</span>
-                  </span>
-                  <span className="text-sm text-muted-foreground">{goalPct}%</span>
+        <Collapsible
+          open={openCard === "goal"}
+          onOpenChange={(o) => setOpenCard(o ? "goal" : null)}
+        >
+          <Card className={goalMet ? "border-green-300 dark:border-green-800" : ""}>
+            <CollapsibleTrigger asChild>
+              <button
+                type="button"
+                className="w-full text-left hover:bg-accent/40 transition-colors rounded-lg"
+                data-testid="toggle-card-goal"
+              >
+                <CardHeader className="pb-3">
+                  <div className="flex items-center justify-between flex-wrap gap-2">
+                    <div className="flex items-center gap-2">
+                      <Target className={`h-5 w-5 ${goalMet ? "text-green-600 dark:text-green-500" : "text-primary"}`} />
+                      <CardTitle className="text-base">Today's study goal</CardTitle>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {goalMet && (
+                        <Badge className="bg-green-600 hover:bg-green-600 text-white">
+                          <CheckCircle2 size={12} className="mr-1" /> Goal complete!
+                        </Badge>
+                      )}
+                      <ChevronDown
+                        size={16}
+                        className={`text-muted-foreground transition-transform ${
+                          openCard === "goal" ? "rotate-180" : ""
+                        }`}
+                      />
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent className="space-y-2">
+                  {loadingStats ? (
+                    <Skeleton className="h-6 w-40" />
+                  ) : (
+                    <>
+                      <div className="flex items-baseline justify-between">
+                        <span className="text-2xl font-bold">
+                          {minutesToHoursLabel(todayMinutes)}
+                          <span className="text-base font-normal text-muted-foreground"> / {minutesToHoursLabel(dailyGoalMinutes)}</span>
+                        </span>
+                        <span className="text-sm text-muted-foreground">{goalPct}%</span>
+                      </div>
+                      <ProgressBar value={goalPct} className="h-2.5" />
+                      <p className="text-xs text-muted-foreground">
+                        {goalMet
+                          ? `You're +${minutesToHoursLabel(Math.max(0, todayMinutes - dailyGoalMinutes))} over your goal. Nice work!`
+                          : `${minutesToHoursLabel(Math.max(0, dailyGoalMinutes - todayMinutes))} to go.`}
+                      </p>
+                    </>
+                  )}
+                </CardContent>
+              </button>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="px-6 pb-4 pt-0 border-t border-border/60" data-testid="detail-card-goal">
+                <div className="text-xs text-muted-foreground mt-3 mb-2">
+                  Today's sessions ({todaySessions.length})
                 </div>
-                <ProgressBar value={goalPct} className="h-2.5" />
-                <p className="text-xs text-muted-foreground">
-                  {goalMet
-                    ? `You're +${minutesToHoursLabel(Math.max(0, todayMinutes - dailyGoalMinutes))} over your goal. Nice work!`
-                    : `${minutesToHoursLabel(Math.max(0, dailyGoalMinutes - todayMinutes))} to go.`}
-                </p>
-              </>
-            )}
-          </CardContent>
-        </Card>
+                {todaySessions.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">No sessions logged today yet.</p>
+                ) : (
+                  <ul className="space-y-1.5">
+                    {todaySessions.map((s) => (
+                      <li
+                        key={s.id}
+                        className="flex items-center justify-between text-sm bg-muted/40 rounded-md px-3 py-1.5"
+                      >
+                        <span className="capitalize">
+                          {(s.sessionType ?? "session").replace("_", " ")}
+                          <span className="text-muted-foreground"> · {s.startTime}</span>
+                        </span>
+                        <span className="font-medium">
+                          {s.durationMinutes != null ? `${s.durationMinutes} min` : "—"}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
       </motion.div>
 
-      {/* SUMMARY CARDS */}
+      {/* SUMMARY CARDS — each expandable */}
       <motion.div variants={itemVariants} className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {[
-          {
-            title: "Completion rate",
-            icon: CheckCircle2,
-            iconColor: "text-primary",
-            value: loadingStats ? null : `${Math.round(stats?.completionRate ?? 0)}%`,
-            sub: loadingStats ? null : `${stats?.completedTasks ?? 0} of ${stats?.totalTasks ?? 0} tasks`,
-            progress: stats?.completionRate,
-          },
-          {
-            title: "Total study time",
-            icon: Clock,
-            iconColor: "text-blue-500",
-            value: loadingStats ? null : minutesToHoursLabel(stats?.totalStudyMinutes ?? 0),
-            sub: loadingStats ? null : `${minutesToHoursLabel(stats?.weekStudyMinutes ?? 0)} this week`,
-          },
-          {
-            title: "Current streak",
-            icon: Flame,
-            iconColor: "text-orange-500",
-            value: loadingStreak ? null : `${streak?.currentStreak ?? 0} days`,
-            sub: loadingStreak ? null : `Longest: ${streak?.longestStreak ?? 0} days`,
-          },
-          {
-            title: "Overdue tasks",
-            icon: TrendingUp,
-            iconColor: "text-destructive",
-            value: loadingStats ? null : String(stats?.overdueCount ?? 0),
-            sub: loadingStats ? null : `${stats?.pendingTasks ?? 0} pending in total`,
-          },
-        ].map((card) => (
-          <Card key={card.title}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">{card.title}</CardTitle>
-              <card.icon className={`h-4 w-4 ${card.iconColor}`} />
-            </CardHeader>
-            <CardContent>
-              {card.value == null ? (
-                <Skeleton className="h-8 w-24" />
-              ) : (
-                <>
-                  <div className="text-2xl font-bold">{card.value}</div>
-                  <p className="text-xs text-muted-foreground mt-1">{card.sub}</p>
-                  {card.progress != null && (
-                    <ProgressBar value={card.progress} className="h-1.5 mt-2" />
+        {/* Completion rate */}
+        <Collapsible
+          open={openCard === "completion"}
+          onOpenChange={(o) => setOpenCard(o ? "completion" : null)}
+        >
+          <Card>
+            <CollapsibleTrigger asChild>
+              <button
+                type="button"
+                className="w-full text-left hover:bg-accent/40 transition-colors rounded-lg"
+                data-testid="toggle-card-completion"
+              >
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Completion rate</CardTitle>
+                  <div className="flex items-center gap-1">
+                    <CheckCircle2 className="h-4 w-4 text-primary" />
+                    <ChevronDown
+                      size={14}
+                      className={`text-muted-foreground transition-transform ${
+                        openCard === "completion" ? "rotate-180" : ""
+                      }`}
+                    />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {loadingStats ? (
+                    <Skeleton className="h-8 w-24" />
+                  ) : (
+                    <>
+                      <div className="text-2xl font-bold">{Math.round(stats?.completionRate ?? 0)}%</div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {stats?.completedTasks ?? 0} of {stats?.totalTasks ?? 0} tasks
+                      </p>
+                      <ProgressBar value={stats?.completionRate ?? 0} className="h-1.5 mt-2" />
+                    </>
                   )}
-                </>
-              )}
-            </CardContent>
+                </CardContent>
+              </button>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="px-6 pb-4 pt-0 border-t border-border/60 space-y-2">
+                <div className="text-xs text-muted-foreground mt-3 mb-1">By priority</div>
+                {(["high", "medium", "low"] as const).map((p) => {
+                  const b = tasksByPriority[p];
+                  const pct = b.total > 0 ? Math.round((b.done / b.total) * 100) : 0;
+                  return (
+                    <div key={p} className="space-y-0.5">
+                      <div className="flex justify-between text-xs">
+                        <span className="capitalize">{p}</span>
+                        <span className="text-muted-foreground">{b.done}/{b.total} · {pct}%</span>
+                      </div>
+                      <ProgressBar value={pct} className="h-1" />
+                    </div>
+                  );
+                })}
+              </div>
+            </CollapsibleContent>
           </Card>
-        ))}
+        </Collapsible>
+
+        {/* Total study time */}
+        <Collapsible
+          open={openCard === "study"}
+          onOpenChange={(o) => setOpenCard(o ? "study" : null)}
+        >
+          <Card>
+            <CollapsibleTrigger asChild>
+              <button
+                type="button"
+                className="w-full text-left hover:bg-accent/40 transition-colors rounded-lg"
+                data-testid="toggle-card-study"
+              >
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Total study time</CardTitle>
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-4 w-4 text-blue-500" />
+                    <ChevronDown
+                      size={14}
+                      className={`text-muted-foreground transition-transform ${
+                        openCard === "study" ? "rotate-180" : ""
+                      }`}
+                    />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {loadingStats ? (
+                    <Skeleton className="h-8 w-24" />
+                  ) : (
+                    <>
+                      <div className="text-2xl font-bold">{minutesToHoursLabel(stats?.totalStudyMinutes ?? 0)}</div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {minutesToHoursLabel(stats?.weekStudyMinutes ?? 0)} this week
+                      </p>
+                    </>
+                  )}
+                </CardContent>
+              </button>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="px-6 pb-4 pt-0 border-t border-border/60">
+                <div className="text-xs text-muted-foreground mt-3 mb-2">Breakdown</div>
+                <div className="grid grid-cols-3 gap-2 text-center text-xs">
+                  <div className="bg-muted/40 rounded p-2">
+                    <div className="font-semibold">{minutesToHoursLabel(stats?.todayStudyMinutes ?? 0)}</div>
+                    <div className="text-muted-foreground">Today</div>
+                  </div>
+                  <div className="bg-muted/40 rounded p-2">
+                    <div className="font-semibold">{minutesToHoursLabel(stats?.weekStudyMinutes ?? 0)}</div>
+                    <div className="text-muted-foreground">7 days</div>
+                  </div>
+                  <div className="bg-muted/40 rounded p-2">
+                    <div className="font-semibold">{minutesToHoursLabel(stats?.totalStudyMinutes ?? 0)}</div>
+                    <div className="text-muted-foreground">All time</div>
+                  </div>
+                </div>
+              </div>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
+
+        {/* Current streak */}
+        <Collapsible
+          open={openCard === "streak"}
+          onOpenChange={(o) => setOpenCard(o ? "streak" : null)}
+        >
+          <Card>
+            <CollapsibleTrigger asChild>
+              <button
+                type="button"
+                className="w-full text-left hover:bg-accent/40 transition-colors rounded-lg"
+                data-testid="toggle-card-streak"
+              >
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Current streak</CardTitle>
+                  <div className="flex items-center gap-1">
+                    <Flame className="h-4 w-4 text-orange-500" />
+                    <ChevronDown
+                      size={14}
+                      className={`text-muted-foreground transition-transform ${
+                        openCard === "streak" ? "rotate-180" : ""
+                      }`}
+                    />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {loadingStreak ? (
+                    <Skeleton className="h-8 w-24" />
+                  ) : (
+                    <>
+                      <div className="text-2xl font-bold">{streak?.currentStreak ?? 0} days</div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Longest: {streak?.longestStreak ?? 0} days
+                      </p>
+                    </>
+                  )}
+                </CardContent>
+              </button>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="px-6 pb-4 pt-0 border-t border-border/60">
+                <div className="text-xs text-muted-foreground mt-3 mb-2">Last 7 days</div>
+                <div className="flex items-end gap-1 h-12">
+                  {dailyMinutes7.map((d) => (
+                    <div key={d.key} className="flex-1 flex flex-col items-center gap-1" title={`${d.full} — ${d.minutes} min`}>
+                      <div
+                        className="w-full rounded-sm bg-orange-400/80"
+                        style={{ height: `${(d.minutes / max7) * 100}%`, minHeight: 2 }}
+                      />
+                      <div className="text-[9px] text-muted-foreground">{d.label[0]}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
+
+        {/* Overdue */}
+        <Collapsible
+          open={openCard === "overdue"}
+          onOpenChange={(o) => setOpenCard(o ? "overdue" : null)}
+        >
+          <Card>
+            <CollapsibleTrigger asChild>
+              <button
+                type="button"
+                className="w-full text-left hover:bg-accent/40 transition-colors rounded-lg"
+                data-testid="toggle-card-overdue"
+              >
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">Overdue tasks</CardTitle>
+                  <div className="flex items-center gap-1">
+                    <TrendingUp className="h-4 w-4 text-destructive" />
+                    <ChevronDown
+                      size={14}
+                      className={`text-muted-foreground transition-transform ${
+                        openCard === "overdue" ? "rotate-180" : ""
+                      }`}
+                    />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {loadingStats ? (
+                    <Skeleton className="h-8 w-24" />
+                  ) : (
+                    <>
+                      <div className="text-2xl font-bold">{stats?.overdueCount ?? 0}</div>
+                      <p className="text-xs text-muted-foreground mt-1">
+                        {stats?.pendingTasks ?? 0} pending in total
+                      </p>
+                    </>
+                  )}
+                </CardContent>
+              </button>
+            </CollapsibleTrigger>
+            <CollapsibleContent>
+              <div className="px-6 pb-4 pt-0 border-t border-border/60">
+                <div className="text-xs text-muted-foreground mt-3 mb-2">
+                  {overdueTasks.length === 0 ? "Nothing overdue — nice." : `${overdueTasks.length} overdue`}
+                </div>
+                {overdueTasks.length > 0 && (
+                  <ul className="space-y-1 max-h-40 overflow-auto">
+                    {overdueTasks.slice(0, 8).map((t) => (
+                      <li key={t.id} className="flex justify-between text-sm bg-muted/40 rounded px-2 py-1">
+                        <span className="truncate">{t.title}</span>
+                        <span className="text-xs text-destructive ml-2 flex-shrink-0">
+                          {t.dueDate}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </CollapsibleContent>
+          </Card>
+        </Collapsible>
       </motion.div>
 
       {/* 14-DAY BAR CHART */}
