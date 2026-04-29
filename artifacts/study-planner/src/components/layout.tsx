@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@workspace/replit-auth-web";
 import { useTheme } from "@/components/theme-provider";
+import { StudyAIChat } from "@/components/study-ai-chat";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -141,6 +142,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex h-screen bg-background text-foreground overflow-hidden">
       {sidebarPosition === "left" ? (<>{sidebar}{main}</>) : (<>{main}{sidebar}</>)}
+      <StudyAIChat />
     </div>
   );
 }

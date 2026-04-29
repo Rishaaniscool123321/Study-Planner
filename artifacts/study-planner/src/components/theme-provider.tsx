@@ -73,6 +73,11 @@ interface CustomizationState {
   setTimerSoundEnabled: (v: boolean) => void;
   timerNotificationsEnabled: boolean;
   setTimerNotificationsEnabled: (v: boolean) => void;
+  // AI assistant
+  aiAssistantName: string;
+  setAiAssistantName: (n: string) => void;
+  aiEnabled: boolean;
+  setAiEnabled: (v: boolean) => void;
   // Presets
   applyPreset: (id: PresetId) => void;
   // Reset
@@ -96,6 +101,8 @@ const KEYS = {
   dashboardWidgets: "study-planner-dashboard-widgets",
   timerSound: "study-planner-timer-sound",
   timerNotifications: "study-planner-timer-notifications",
+  aiAssistantName: "study-planner-ai-name",
+  aiEnabled: "study-planner-ai-enabled",
 };
 
 function readLS<T>(key: string, fallback: T): T {
@@ -135,6 +142,8 @@ export function ThemeProvider({
   );
   const [timerSoundEnabled, setTimerSoundEnabledState] = useState<boolean>(() => readLS(KEYS.timerSound, true));
   const [timerNotificationsEnabled, setTimerNotificationsEnabledState] = useState<boolean>(() => readLS(KEYS.timerNotifications, true));
+  const [aiAssistantName, setAiAssistantNameState] = useState<string>(() => readLS(KEYS.aiAssistantName, "Study AI"));
+  const [aiEnabled, setAiEnabledState] = useState<boolean>(() => readLS(KEYS.aiEnabled, true));
 
   // Apply light/dark class
   useEffect(() => {
@@ -257,6 +266,11 @@ export function ThemeProvider({
   };
   const setTimerSoundEnabled = (v: boolean) => { writeLS(KEYS.timerSound, v); setTimerSoundEnabledState(v); };
   const setTimerNotificationsEnabled = (v: boolean) => { writeLS(KEYS.timerNotifications, v); setTimerNotificationsEnabledState(v); };
+  const setAiAssistantName = (n: string) => {
+    const trimmed = n.trim().slice(0, 40) || "Study AI";
+    writeLS(KEYS.aiAssistantName, trimmed); setAiAssistantNameState(trimmed);
+  };
+  const setAiEnabled = (v: boolean) => { writeLS(KEYS.aiEnabled, v); setAiEnabledState(v); };
 
   const applyPreset = useCallback((id: PresetId) => {
     const presets: Record<PresetId, {
@@ -307,6 +321,8 @@ export function ThemeProvider({
     setDashboardWidgetsState({ ...DEFAULT_DASHBOARD_WIDGETS });
     setTimerSoundEnabledState(true);
     setTimerNotificationsEnabledState(true);
+    setAiAssistantNameState("Study AI");
+    setAiEnabledState(true);
     document.documentElement.style.removeProperty("--radius");
     document.documentElement.style.removeProperty("font-size");
   }, []);
@@ -322,8 +338,10 @@ export function ThemeProvider({
     dashboardWidgets, setDashboardWidget,
     timerSoundEnabled, setTimerSoundEnabled,
     timerNotificationsEnabled, setTimerNotificationsEnabled,
+    aiAssistantName, setAiAssistantName,
+    aiEnabled, setAiEnabled,
     applyPreset, resetCustomization,
-  }), [theme, colorTheme, customThemes, font, fontScale, radius, density, sidebarPosition, sidebarSize, reduceMotion, dailyGoalMinutes, dashboardWidgets, timerSoundEnabled, timerNotificationsEnabled, applyPreset, saveCustomTheme, deleteCustomTheme, resetCustomization]);
+  }), [theme, colorTheme, customThemes, font, fontScale, radius, density, sidebarPosition, sidebarSize, reduceMotion, dailyGoalMinutes, dashboardWidgets, timerSoundEnabled, timerNotificationsEnabled, aiAssistantName, aiEnabled, applyPreset, saveCustomTheme, deleteCustomTheme, resetCustomization]);
 
   return <ThemeProviderContext.Provider value={value}>{children}</ThemeProviderContext.Provider>;
 }

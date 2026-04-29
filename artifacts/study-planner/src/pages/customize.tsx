@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import {
   Check, Sun, Moon, Monitor, Sparkles, Trash2, Save, Palette as PaletteIcon,
   RotateCcw, Type, MoveHorizontal, Bell, Volume2, Target, LayoutGrid,
-  Zap, Coffee, Terminal, Heart, Star,
+  Zap, Coffee, Terminal, Heart, Star, MessageCircle,
 } from "lucide-react";
 import {
   useTheme,
@@ -67,6 +67,8 @@ export default function Customize() {
     dashboardWidgets, setDashboardWidget,
     timerSoundEnabled, setTimerSoundEnabled,
     timerNotificationsEnabled, setTimerNotificationsEnabled,
+    aiAssistantName, setAiAssistantName,
+    aiEnabled, setAiEnabled,
     applyPreset,
     resetCustomization,
   } = useTheme();
@@ -517,6 +519,59 @@ export default function Customize() {
                 </div>
               </div>
               <Switch checked={timerNotificationsEnabled} onCheckedChange={setTimerNotificationsEnabled} />
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
+        <AccordionItem value="ai-assistant" className="border rounded-lg px-4">
+          <AccordionTrigger className="hover:no-underline">
+            <div className="flex items-center gap-2">
+              <MessageCircle size={16} className="text-primary" />
+              <span className="font-semibold">Study AI assistant</span>
+              <span className="text-xs text-muted-foreground font-normal ml-2">
+                Chat assistant that can also customise the app
+              </span>
+            </div>
+          </AccordionTrigger>
+          <AccordionContent className="space-y-4 pt-2">
+            <div className="flex items-center justify-between py-2 border-b">
+              <div className="flex items-start gap-2">
+                <Sparkles size={16} className="text-muted-foreground mt-0.5" />
+                <div>
+                  <Label className="text-sm">Show floating chat button</Label>
+                  <p className="text-xs text-muted-foreground">
+                    Hide it if you'd prefer to keep things simple.
+                  </p>
+                </div>
+              </div>
+              <Switch
+                checked={aiEnabled}
+                onCheckedChange={setAiEnabled}
+                data-testid="switch-ai-enabled"
+              />
+            </div>
+            <div className="space-y-2 py-2">
+              <Label htmlFor="ai-name" className="text-sm">Assistant name</Label>
+              <Input
+                id="ai-name"
+                value={aiAssistantName}
+                onChange={(e) => setAiAssistantName(e.target.value)}
+                placeholder="Study AI"
+                maxLength={40}
+                disabled={!aiEnabled}
+                data-testid="input-ai-name"
+              />
+              <p className="text-xs text-muted-foreground">
+                Give your assistant a name. The AI will introduce itself with it.
+              </p>
+            </div>
+            <div className="rounded-md bg-muted/40 border border-border/60 p-3 text-xs text-muted-foreground space-y-1">
+              <p className="font-medium text-foreground">What can it do?</p>
+              <ul className="list-disc list-inside space-y-0.5">
+                <li>Suggest study techniques and help you plan sessions</li>
+                <li>Apply themes, presets, daily goals and other settings on request</li>
+                <li>Stays focused on studying — won't answer off-topic questions</li>
+              </ul>
             </div>
           </AccordionContent>
         </AccordionItem>

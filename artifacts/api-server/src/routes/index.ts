@@ -6,6 +6,7 @@ import sessionsRouter from "./sessions";
 import statsRouter from "./stats";
 import authRouter from "./auth";
 import passwordsRouter from "./passwords";
+import aiRouter from "./ai";
 
 const router: IRouter = Router();
 
@@ -16,5 +17,6 @@ router.use(tasksRouter);
 router.use(sessionsRouter);
 router.use(statsRouter);
 router.use(passwordsRouter);
+router.use(aiRouter);
 
 export default router;

@@ -30,6 +30,7 @@ A full-stack Study Planner web app built for the Distance Learning Vibe Coding C
 - **Progress** — Today's-goal progress card, summary cards, 14-day Recharts bar chart of study minutes, 12-week heatmap (84 cells coloured by minutes vs daily goal, today is ringed), streak section, per-subject breakdown.
 - **Customize** — Quick-Preset cards (Default / Focus / Cozy / Hacker / Pastel) apply a full theme + layout in one click. Below them, accordion sections for Appearance (light/dark + 46+ themes filterable by mode and category), Look & feel (font, text size, corner radius, density, reduce motion), Layout (sidebar position/size), Daily study goal (slider 15–240 min), Dashboard widgets (toggle list), Timer notifications (sound + browser pop-ups). Custom theme creator picks 3 colours and auto-derives text/card/border (Advanced toggle exposes the rest). All state persisted to `localStorage`.
 - **Passwords** — per-user encrypted password vault. AES-256-GCM at rest using `SESSION_SECRET`-derived key. Stores name, website, username, password, optional 2FA TOTP secret. Password and TOTP secret only revealed on explicit click. Live TOTP code generation in the UI
+- **Study AI** — floating chat assistant (default name "Study AI", renameable in Customize, can be disabled). Powered by Google Gemini 2.5 Flash via the Replit AI Integrations proxy (no user-supplied API key). Chats about study topics with simple guardrails ("study-only" system prompt, no homework answers) and can apply customisations via natural language. The model emits `ACTION:` JSON lines that the server parses against a strict Zod discriminated-union schema (`applyPreset`, `setColorTheme`, `setMode`, `setDailyGoal`, `setFont`, `setDensity`, `setRadius`, `setSidebarPosition`, `toggleWidget`, `setTimerSound`, `setTimerNotifications`); unknown actions are dropped, max 6 actions per reply. User-supplied prompt-context fields (assistant name, theme IDs) are constrained to safe character sets to prevent prompt injection. Chat history is client-side only (`localStorage`, last 30 messages, shape-validated on load). Closeable via Escape key.
 
 ## Client-side state (localStorage via `theme-provider.tsx`)
 
@@ -38,6 +39,7 @@ A full-stack Study Planner web app built for the Distance Learning Vibe Coding C
 - `app-dashboard-widgets` — `{stats, goal, weekly, schedule, upNext, timer}` booleans
 - `app-timer-sound`, `app-timer-notifications`
 - `app-custom-themes` — user-defined themes
+- `study-planner-ai-name` (default "Study AI"), `study-planner-ai-enabled` (default true), `study-planner-ai-chat-history`
 
 ## Database Schema (additions)
 
