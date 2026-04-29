@@ -128,7 +128,8 @@ Most study apps:
 git clone https://github.com/Rishaaniscool123321/Study-Planner.git
 cd Study-Planner
 npm install
-npm run dev```
+npm run dev
+```
 
 ### **After Local Setup**
 type in your web brower
