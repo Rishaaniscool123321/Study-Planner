@@ -4,6 +4,7 @@ import { useAuth } from "@workspace/replit-auth-web";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
+import { TimerProvider } from "@/contexts/timer-context";
 import { AppLayout } from "@/components/layout";
 import NotFound from "@/pages/not-found";
 import LoginPage from "@/pages/login";
@@ -47,7 +48,11 @@ function AuthGate() {
     );
   }
   if (!isAuthenticated) return <LoginPage />;
-  return <AuthedRouter />;
+  return (
+    <TimerProvider>
+      <AuthedRouter />
+    </TimerProvider>
+  );
 }
 
 function App() {

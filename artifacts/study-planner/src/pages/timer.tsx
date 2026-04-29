@@ -1,144 +1,35 @@
-import { useState, useEffect, useRef } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
-import { Play, Pause, RotateCcw, Coffee, BookOpen, Target } from "lucide-react";
-import { format } from "date-fns";
+import { Play, Pause, RotateCcw } from "lucide-react";
 
-import {
-  useListSubjects,
-  useCreateSession,
-  getListSessionsQueryKey,
-  getGetStatsSummaryQueryKey,
-  getGetStreakQueryKey,
-  getGetStatsBySubjectQueryKey,
-} from "@workspace/api-client-react";
+import { useListSubjects } from "@workspace/api-client-react";
 
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { useToast } from "@/hooks/use-toast";
-
-const PRESETS = [
-  { label: "Pomodoro", minutes: 25, icon: Target, sessionType: "pomodoro" as const, color: "hsl(var(--primary))" },
-  { label: "Short Break", minutes: 5, icon: Coffee, sessionType: "regular" as const, color: "#10b981" },
-  { label: "Long Break", minutes: 15, icon: Coffee, sessionType: "regular" as const, color: "#3b82f6" },
-  { label: "Deep Focus", minutes: 50, icon: BookOpen, sessionType: "exam_prep" as const, color: "#f59e0b" },
-];
-
-function pad(n: number) {
-  return String(n).padStart(2, "0");
-}
+import { useTimer } from "@/contexts/timer-context";
 
 export default function Timer() {
-  const [presetIdx, setPresetIdx] = useState(0);
-  const [subjectId, setSubjectId] = useState<string>("");
-  const [seconds, setSeconds] = useState(PRESETS[0].minutes * 60);
-  const [running, setRunning] = useState(false);
-  const [sessionStartTime, setSessionStartTime] = useState<string | null>(null);
-  const [sessionDate, setSessionDate] = useState<string | null>(null);
-  const [completedCount, setCompletedCount] = useState(0);
-
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const queryClient = useQueryClient();
-  const { toast } = useToast();
+  const {
+    presets,
+    presetIdx,
+    preset,
+    seconds,
+    totalSeconds,
+    progress,
+    running,
+    completedCount,
+    subjectId,
+    formatted,
+    start,
+    pause,
+    reset,
+    setPreset,
+    setSubjectId,
+  } = useTimer();
 
   const { data: subjects } = useListSubjects();
-  const createSession = useCreateSession();
-
-  const preset = PRESETS[presetIdx];
-  const totalSeconds = preset.minutes * 60;
-  const progress = ((totalSeconds - seconds) / totalSeconds) * 100;
-  const mins = Math.floor(seconds / 60);
-  const secs = seconds % 60;
-
-  function invalidate() {
-    queryClient.invalidateQueries({ queryKey: getListSessionsQueryKey() });
-    queryClient.invalidateQueries({ queryKey: getGetStatsSummaryQueryKey() });
-    queryClient.invalidateQueries({ queryKey: getGetStreakQueryKey() });
-    queryClient.invalidateQueries({ queryKey: getGetStatsBySubjectQueryKey() });
-  }
-
-  function handleComplete() {
-    setRunning(false);
-    setCompletedCount((c) => c + 1);
-
-    if (sessionStartTime && sessionDate) {
-      createSession.mutate(
-        {
-          data: {
-            date: sessionDate,
-            startTime: sessionStartTime,
-            endTime: format(new Date(), "HH:mm"),
-            durationMinutes: preset.minutes,
-            sessionType: preset.sessionType,
-            subjectId: subjectId && subjectId !== "none" ? Number(subjectId) : null,
-            notes: `${preset.label} session`,
-          },
-        },
-        {
-          onSuccess: () => {
-            invalidate();
-            toast({
-              title: `${preset.label} complete!`,
-              description: `${preset.minutes} minutes logged.`,
-            });
-          },
-        }
-      );
-    }
-
-    setSessionStartTime(null);
-    setSessionDate(null);
-    setSeconds(totalSeconds);
-  }
-
-  useEffect(() => {
-    if (running) {
-      intervalRef.current = setInterval(() => {
-        setSeconds((s) => {
-          if (s <= 1) {
-            handleComplete();
-            return 0;
-          }
-          return s - 1;
-        });
-      }, 1000);
-    } else {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    }
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [running, preset.minutes]);
-
-  function handleStart() {
-    if (!sessionStartTime) {
-      setSessionStartTime(format(new Date(), "HH:mm"));
-      setSessionDate(format(new Date(), "yyyy-MM-dd"));
-    }
-    setRunning(true);
-  }
-
-  function handlePause() {
-    setRunning(false);
-  }
-
-  function handleReset() {
-    setRunning(false);
-    setSeconds(totalSeconds);
-    setSessionStartTime(null);
-    setSessionDate(null);
-  }
-
-  function handlePresetChange(idx: number) {
-    setPresetIdx(idx);
-    setRunning(false);
-    setSeconds(PRESETS[idx].minutes * 60);
-    setSessionStartTime(null);
-    setSessionDate(null);
-  }
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -153,16 +44,18 @@ export default function Timer() {
     <motion.div className="space-y-6 max-w-xl mx-auto" variants={containerVariants} initial="hidden" animate="visible">
       <motion.div variants={itemVariants}>
         <h1 className="text-3xl font-bold tracking-tight">Focus Timer</h1>
-        <p className="text-muted-foreground mt-1">Stay focused and track your study sessions automatically.</p>
+        <p className="text-muted-foreground mt-1">
+          Stay focused — the timer keeps running across the whole app.
+        </p>
       </motion.div>
 
       <motion.div variants={itemVariants} className="flex flex-wrap gap-2">
-        {PRESETS.map((p, i) => {
+        {presets.map((p, i) => {
           const Icon = p.icon;
           return (
             <button
               key={p.label}
-              onClick={() => handlePresetChange(i)}
+              onClick={() => setPreset(i)}
               className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium transition-all ${
                 presetIdx === i
                   ? "text-white shadow-md"
@@ -197,9 +90,7 @@ export default function Timer() {
                 />
               </svg>
               <div className="text-center">
-                <div className="text-5xl font-bold font-mono tabular-nums">
-                  {pad(mins)}:{pad(secs)}
-                </div>
+                <div className="text-5xl font-bold font-mono tabular-nums">{formatted}</div>
                 <div className="text-sm text-muted-foreground mt-1">{preset.label}</div>
               </div>
             </div>
@@ -207,15 +98,15 @@ export default function Timer() {
             <Progress value={progress} className="h-2 w-full" />
 
             <div className="flex items-center gap-3">
-              <Button variant="outline" size="icon" onClick={handleReset} disabled={!running && seconds === totalSeconds}>
+              <Button variant="outline" size="icon" onClick={reset} disabled={!running && seconds === totalSeconds}>
                 <RotateCcw className="h-4 w-4" />
               </Button>
               {running ? (
-                <Button size="lg" onClick={handlePause} className="px-10" style={{ backgroundColor: preset.color }}>
+                <Button size="lg" onClick={pause} className="px-10" style={{ backgroundColor: preset.color }}>
                   <Pause className="mr-2 h-5 w-5" /> Pause
                 </Button>
               ) : (
-                <Button size="lg" onClick={handleStart} className="px-10" style={{ backgroundColor: preset.color }}>
+                <Button size="lg" onClick={start} className="px-10" style={{ backgroundColor: preset.color }}>
                   <Play className="mr-2 h-5 w-5" /> {seconds === totalSeconds ? "Start" : "Resume"}
                 </Button>
               )}
@@ -247,7 +138,7 @@ export default function Timer() {
               <CardTitle className="text-sm font-medium text-primary">Sessions completed today</CardTitle>
             </CardHeader>
             <CardContent className="px-4 pb-4">
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-wrap">
                 {Array.from({ length: completedCount }).map((_, i) => (
                   <div
                     key={i}
