@@ -976,3 +976,980 @@
   * { @apply border-border; }
   body { @apply font-sans antialiased bg-background text-foreground; }
 }
+
+/* ════════════════════════════════════════════════════════════════
+   FONT FAMILIES — selectable via [data-font="..."] on root
+   ════════════════════════════════════════════════════════════════ */
+[data-font="inter"]      { --app-font-sans: 'Inter', system-ui, sans-serif; }
+[data-font="system"]     { --app-font-sans: -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
+[data-font="serif"]      { --app-font-sans: Georgia, 'Times New Roman', serif; }
+[data-font="mono"]       { --app-font-sans: ui-monospace, 'Courier New', monospace; }
+[data-font="rounded"]    { --app-font-sans: 'Nunito', 'Quicksand', system-ui, sans-serif; }
+[data-font="display"]    { --app-font-sans: 'Playfair Display', Georgia, serif; }
+[data-font="handwriting"]{ --app-font-sans: 'Comic Sans MS', 'Marker Felt', cursive; }
+
+/* ════════════════════════════════════════════════════════════════
+   UI DENSITY — adjust spacing scale via [data-density="..."]
+   ════════════════════════════════════════════════════════════════ */
+[data-density="compact"]    { --density-scale: 0.85; }
+[data-density="comfortable"]{ --density-scale: 1; }
+[data-density="spacious"]   { --density-scale: 1.2; }
+[data-density="compact"] body, [data-density="compact"] {
+  font-size: 14px;
+}
+[data-density="spacious"] body, [data-density="spacious"] {
+  font-size: 17px;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   REDUCE MOTION
+   ════════════════════════════════════════════════════════════════ */
+[data-motion="off"] *, [data-motion="off"] *::before, [data-motion="off"] *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   NEW THEMES — Tech & Sci-Fi
+   ════════════════════════════════════════════════════════════════ */
+
+/* ─── TRON ─── cyan grid on black ─────────────────────────────── */
+[data-color-theme="tron"] {
+  --background: 200 100% 3%;
+  --foreground: 195 100% 85%;
+  --border: 195 90% 16%;
+  --card: 200 90% 5%;
+  --card-foreground: 195 100% 85%;
+  --card-border: 195 90% 18%;
+  --sidebar: 200 100% 2%;
+  --sidebar-foreground: 195 100% 85%;
+  --sidebar-border: 195 90% 14%;
+  --sidebar-primary: 195 100% 55%;
+  --sidebar-primary-foreground: 0 0% 0%;
+  --sidebar-accent: 200 80% 6%;
+  --sidebar-accent-foreground: 195 100% 85%;
+  --sidebar-ring: 195 100% 55%;
+  --popover: 200 90% 5%;
+  --popover-foreground: 195 100% 85%;
+  --popover-border: 195 90% 18%;
+  --primary: 195 100% 55%;
+  --primary-foreground: 0 0% 0%;
+  --secondary: 200 80% 7%;
+  --secondary-foreground: 195 100% 85%;
+  --muted: 200 60% 9%;
+  --muted-foreground: 195 50% 55%;
+  --accent: 30 100% 55%;
+  --accent-foreground: 0 0% 0%;
+  --destructive: 0 90% 55%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 195 90% 18%;
+  --ring: 195 100% 55%;
+  --button-outline: rgba(56,224,255,.20);
+  --badge-outline: rgba(56,224,255,.10);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(56,224,255,.05);
+  --elevate-2: rgba(56,224,255,.10);
+}
+
+/* ─── ALIEN TECH ─── acid green on dark ─────────────────────── */
+[data-color-theme="alien-tech"] {
+  --background: 90 30% 4%;
+  --foreground: 95 90% 75%;
+  --border: 95 50% 14%;
+  --card: 90 30% 6%;
+  --card-foreground: 95 90% 75%;
+  --card-border: 95 50% 14%;
+  --sidebar: 90 30% 3%;
+  --sidebar-foreground: 95 90% 75%;
+  --sidebar-border: 95 50% 11%;
+  --sidebar-primary: 90 100% 50%;
+  --sidebar-primary-foreground: 90 30% 5%;
+  --sidebar-accent: 90 30% 8%;
+  --sidebar-accent-foreground: 95 90% 75%;
+  --sidebar-ring: 90 100% 50%;
+  --popover: 90 30% 6%;
+  --popover-foreground: 95 90% 75%;
+  --popover-border: 95 50% 14%;
+  --primary: 90 100% 50%;
+  --primary-foreground: 90 30% 5%;
+  --secondary: 90 30% 9%;
+  --secondary-foreground: 95 90% 75%;
+  --muted: 90 25% 11%;
+  --muted-foreground: 95 30% 50%;
+  --accent: 60 100% 55%;
+  --accent-foreground: 0 0% 0%;
+  --destructive: 0 90% 55%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 95 50% 14%;
+  --ring: 90 100% 50%;
+  --button-outline: rgba(165,255,0,.18);
+  --badge-outline: rgba(165,255,0,.08);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(165,255,0,.05);
+  --elevate-2: rgba(165,255,0,.10);
+}
+
+/* ─── MAINFRAME ─── amber CRT terminal ────────────────────────── */
+[data-color-theme="mainframe"] {
+  --background: 30 50% 4%;
+  --foreground: 38 90% 60%;
+  --border: 30 60% 14%;
+  --card: 30 45% 6%;
+  --card-foreground: 38 90% 60%;
+  --card-border: 30 60% 14%;
+  --sidebar: 30 50% 3%;
+  --sidebar-foreground: 38 90% 60%;
+  --sidebar-border: 30 60% 11%;
+  --sidebar-primary: 38 100% 50%;
+  --sidebar-primary-foreground: 30 50% 5%;
+  --sidebar-accent: 30 45% 7%;
+  --sidebar-accent-foreground: 38 90% 60%;
+  --sidebar-ring: 38 100% 50%;
+  --popover: 30 45% 6%;
+  --popover-foreground: 38 90% 60%;
+  --popover-border: 30 60% 14%;
+  --primary: 38 100% 50%;
+  --primary-foreground: 30 50% 5%;
+  --secondary: 30 45% 8%;
+  --secondary-foreground: 38 90% 60%;
+  --muted: 30 35% 10%;
+  --muted-foreground: 35 45% 45%;
+  --accent: 50 100% 55%;
+  --accent-foreground: 0 0% 0%;
+  --destructive: 0 80% 50%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 30 60% 14%;
+  --ring: 38 100% 50%;
+  --button-outline: rgba(255,176,0,.15);
+  --badge-outline: rgba(255,176,0,.08);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(255,176,0,.04);
+  --elevate-2: rgba(255,176,0,.10);
+  --app-font-sans: 'Courier New', monospace;
+}
+
+/* ─── HOLOGRAPHIC ─── pearl with rainbow accents ─────────────── */
+[data-color-theme="holographic"] {
+  --background: 220 30% 97%;
+  --foreground: 240 25% 15%;
+  --border: 250 30% 88%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 25% 15%;
+  --card-border: 250 30% 88%;
+  --sidebar: 240 30% 96%;
+  --sidebar-foreground: 240 25% 15%;
+  --sidebar-border: 250 30% 88%;
+  --sidebar-primary: 280 80% 60%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 200 50% 94%;
+  --sidebar-accent-foreground: 240 25% 15%;
+  --sidebar-ring: 280 80% 60%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 25% 15%;
+  --popover-border: 250 30% 88%;
+  --primary: 280 80% 60%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 200 50% 94%;
+  --secondary-foreground: 240 25% 15%;
+  --muted: 220 40% 94%;
+  --muted-foreground: 240 14% 46%;
+  --accent: 180 80% 50%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 340 85% 55%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 250 30% 88%;
+  --ring: 280 80% 60%;
+  --button-outline: rgba(180,80,255,.18);
+  --badge-outline: rgba(180,80,255,.08);
+  --opaque-button-border-intensity: -8;
+  --elevate-1: rgba(180,80,255,.04);
+  --elevate-2: rgba(180,80,255,.10);
+}
+
+/* ─── SPACESHIP BRIDGE ─── dim red on dark ──────────────────── */
+[data-color-theme="spaceship"] {
+  --background: 0 30% 5%;
+  --foreground: 0 50% 75%;
+  --border: 0 35% 16%;
+  --card: 0 30% 7%;
+  --card-foreground: 0 50% 75%;
+  --card-border: 0 35% 16%;
+  --sidebar: 0 30% 4%;
+  --sidebar-foreground: 0 50% 75%;
+  --sidebar-border: 0 35% 13%;
+  --sidebar-primary: 0 90% 50%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 0 30% 9%;
+  --sidebar-accent-foreground: 0 50% 75%;
+  --sidebar-ring: 0 90% 50%;
+  --popover: 0 30% 7%;
+  --popover-foreground: 0 50% 75%;
+  --popover-border: 0 35% 16%;
+  --primary: 0 90% 50%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 30% 11%;
+  --secondary-foreground: 0 50% 75%;
+  --muted: 0 25% 12%;
+  --muted-foreground: 0 25% 50%;
+  --accent: 30 90% 55%;
+  --accent-foreground: 0 0% 0%;
+  --destructive: 50 100% 50%;
+  --destructive-foreground: 0 0% 0%;
+  --input: 0 35% 16%;
+  --ring: 0 90% 50%;
+  --button-outline: rgba(255,30,30,.18);
+  --badge-outline: rgba(255,30,30,.08);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(255,30,30,.05);
+  --elevate-2: rgba(255,30,30,.10);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   NEW THEMES — Game
+   ════════════════════════════════════════════════════════════════ */
+
+/* ─── GAMEBOY ─── 4-shade green LCD ────────────────────────── */
+[data-color-theme="gameboy"] {
+  --background: 88 35% 65%;
+  --foreground: 110 50% 14%;
+  --border: 105 40% 38%;
+  --card: 95 40% 70%;
+  --card-foreground: 110 50% 14%;
+  --card-border: 105 40% 38%;
+  --sidebar: 88 35% 60%;
+  --sidebar-foreground: 110 50% 14%;
+  --sidebar-border: 105 40% 35%;
+  --sidebar-primary: 110 50% 14%;
+  --sidebar-primary-foreground: 88 35% 75%;
+  --sidebar-accent: 95 38% 55%;
+  --sidebar-accent-foreground: 110 50% 14%;
+  --sidebar-ring: 110 50% 14%;
+  --popover: 95 40% 70%;
+  --popover-foreground: 110 50% 14%;
+  --popover-border: 105 40% 38%;
+  --primary: 110 50% 14%;
+  --primary-foreground: 88 35% 75%;
+  --secondary: 95 38% 55%;
+  --secondary-foreground: 110 50% 14%;
+  --muted: 92 35% 50%;
+  --muted-foreground: 110 40% 22%;
+  --accent: 110 60% 28%;
+  --accent-foreground: 88 35% 80%;
+  --destructive: 0 70% 35%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 105 40% 38%;
+  --ring: 110 50% 14%;
+  --button-outline: rgba(0,0,0,.20);
+  --badge-outline: rgba(0,0,0,.10);
+  --opaque-button-border-intensity: -10;
+  --elevate-1: rgba(0,0,0,.05);
+  --elevate-2: rgba(0,0,0,.12);
+  --app-font-sans: 'Courier New', monospace;
+}
+
+/* ─── ARCADE ─── neon hot pink + cyan on black ─────────────── */
+[data-color-theme="arcade"] {
+  --background: 0 0% 4%;
+  --foreground: 320 100% 88%;
+  --border: 320 50% 16%;
+  --card: 0 0% 6%;
+  --card-foreground: 320 100% 88%;
+  --card-border: 320 50% 16%;
+  --sidebar: 0 0% 3%;
+  --sidebar-foreground: 320 100% 88%;
+  --sidebar-border: 320 50% 14%;
+  --sidebar-primary: 320 100% 60%;
+  --sidebar-primary-foreground: 0 0% 0%;
+  --sidebar-accent: 0 0% 8%;
+  --sidebar-accent-foreground: 320 100% 88%;
+  --sidebar-ring: 320 100% 60%;
+  --popover: 0 0% 6%;
+  --popover-foreground: 320 100% 88%;
+  --popover-border: 320 50% 16%;
+  --primary: 320 100% 60%;
+  --primary-foreground: 0 0% 0%;
+  --secondary: 0 0% 9%;
+  --secondary-foreground: 320 100% 88%;
+  --muted: 320 25% 11%;
+  --muted-foreground: 320 35% 60%;
+  --accent: 180 100% 55%;
+  --accent-foreground: 0 0% 0%;
+  --destructive: 0 100% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 320 50% 16%;
+  --ring: 320 100% 60%;
+  --button-outline: rgba(255,40,180,.20);
+  --badge-outline: rgba(255,40,180,.10);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(255,40,180,.05);
+  --elevate-2: rgba(255,40,180,.10);
+}
+
+/* ─── PORTAL ─── orange + blue ─────────────────────────────── */
+[data-color-theme="portal"] {
+  --background: 210 25% 8%;
+  --foreground: 210 20% 92%;
+  --border: 210 25% 18%;
+  --card: 210 25% 11%;
+  --card-foreground: 210 20% 92%;
+  --card-border: 210 25% 18%;
+  --sidebar: 210 25% 7%;
+  --sidebar-foreground: 210 20% 92%;
+  --sidebar-border: 210 25% 15%;
+  --sidebar-primary: 210 100% 55%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 210 25% 13%;
+  --sidebar-accent-foreground: 210 20% 92%;
+  --sidebar-ring: 210 100% 55%;
+  --popover: 210 25% 11%;
+  --popover-foreground: 210 20% 92%;
+  --popover-border: 210 25% 18%;
+  --primary: 210 100% 55%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 25% 14%;
+  --secondary-foreground: 210 20% 92%;
+  --muted: 210 20% 15%;
+  --muted-foreground: 210 15% 55%;
+  --accent: 25 95% 55%;
+  --accent-foreground: 0 0% 0%;
+  --destructive: 0 80% 55%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 210 25% 18%;
+  --ring: 210 100% 55%;
+  --button-outline: rgba(40,140,255,.18);
+  --badge-outline: rgba(40,140,255,.08);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(40,140,255,.05);
+  --elevate-2: rgba(40,140,255,.10);
+}
+
+/* ─── MINECRAFT ─── earthy blocks ─────────────────────────── */
+[data-color-theme="minecraft"] {
+  --background: 30 18% 90%;
+  --foreground: 25 40% 15%;
+  --border: 28 25% 70%;
+  --card: 30 22% 94%;
+  --card-foreground: 25 40% 15%;
+  --card-border: 28 25% 72%;
+  --sidebar: 25 30% 35%;
+  --sidebar-foreground: 30 30% 92%;
+  --sidebar-border: 25 35% 25%;
+  --sidebar-primary: 100 50% 35%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 25 35% 28%;
+  --sidebar-accent-foreground: 30 30% 92%;
+  --sidebar-ring: 100 50% 35%;
+  --popover: 30 22% 94%;
+  --popover-foreground: 25 40% 15%;
+  --popover-border: 28 25% 72%;
+  --primary: 100 50% 35%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 30 22% 80%;
+  --secondary-foreground: 25 40% 15%;
+  --muted: 30 18% 82%;
+  --muted-foreground: 25 25% 35%;
+  --accent: 25 60% 45%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 75% 45%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 28 25% 72%;
+  --ring: 100 50% 35%;
+  --button-outline: rgba(0,0,0,.14);
+  --badge-outline: rgba(0,0,0,.07);
+  --opaque-button-border-intensity: -10;
+  --elevate-1: rgba(0,0,0,.04);
+  --elevate-2: rgba(0,0,0,.10);
+  --radius: .25rem;
+}
+
+/* ─── PAC-MAN ─── black with yellow ────────────────────────── */
+[data-color-theme="pacman"] {
+  --background: 240 100% 4%;
+  --foreground: 50 100% 80%;
+  --border: 240 80% 18%;
+  --card: 240 90% 7%;
+  --card-foreground: 50 100% 80%;
+  --card-border: 240 80% 18%;
+  --sidebar: 240 100% 3%;
+  --sidebar-foreground: 50 100% 80%;
+  --sidebar-border: 240 80% 14%;
+  --sidebar-primary: 50 100% 55%;
+  --sidebar-primary-foreground: 240 100% 8%;
+  --sidebar-accent: 240 80% 9%;
+  --sidebar-accent-foreground: 50 100% 80%;
+  --sidebar-ring: 50 100% 55%;
+  --popover: 240 90% 7%;
+  --popover-foreground: 50 100% 80%;
+  --popover-border: 240 80% 18%;
+  --primary: 50 100% 55%;
+  --primary-foreground: 240 100% 8%;
+  --secondary: 240 80% 11%;
+  --secondary-foreground: 50 100% 80%;
+  --muted: 240 60% 13%;
+  --muted-foreground: 50 30% 60%;
+  --accent: 320 100% 60%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 100% 55%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 240 80% 18%;
+  --ring: 50 100% 55%;
+  --button-outline: rgba(255,238,0,.20);
+  --badge-outline: rgba(255,238,0,.08);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(255,238,0,.05);
+  --elevate-2: rgba(255,238,0,.10);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   NEW THEMES — Medieval & Fantasy
+   ════════════════════════════════════════════════════════════════ */
+
+/* ─── PARCHMENT ─── beige with deep wine ─────────────────── */
+[data-color-theme="parchment"] {
+  --background: 38 50% 92%;
+  --foreground: 25 60% 18%;
+  --border: 35 35% 78%;
+  --card: 40 60% 95%;
+  --card-foreground: 25 60% 18%;
+  --card-border: 35 35% 78%;
+  --sidebar: 38 45% 88%;
+  --sidebar-foreground: 25 60% 18%;
+  --sidebar-border: 35 35% 75%;
+  --sidebar-primary: 0 70% 38%;
+  --sidebar-primary-foreground: 40 60% 96%;
+  --sidebar-accent: 35 40% 84%;
+  --sidebar-accent-foreground: 25 60% 18%;
+  --sidebar-ring: 0 70% 38%;
+  --popover: 40 60% 95%;
+  --popover-foreground: 25 60% 18%;
+  --popover-border: 35 35% 78%;
+  --primary: 0 70% 38%;
+  --primary-foreground: 40 60% 96%;
+  --secondary: 35 40% 85%;
+  --secondary-foreground: 25 60% 18%;
+  --muted: 35 30% 86%;
+  --muted-foreground: 30 25% 40%;
+  --accent: 38 90% 45%;
+  --accent-foreground: 25 60% 12%;
+  --destructive: 0 80% 40%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 35 35% 78%;
+  --ring: 0 70% 38%;
+  --button-outline: rgba(0,0,0,.14);
+  --badge-outline: rgba(0,0,0,.07);
+  --opaque-button-border-intensity: -10;
+  --elevate-1: rgba(0,0,0,.04);
+  --elevate-2: rgba(0,0,0,.10);
+  --app-font-sans: Georgia, 'Times New Roman', serif;
+}
+
+/* ─── ROYAL ─── purple + gold ──────────────────────────────── */
+[data-color-theme="royal"] {
+  --background: 270 40% 10%;
+  --foreground: 45 75% 88%;
+  --border: 270 35% 22%;
+  --card: 270 40% 13%;
+  --card-foreground: 45 75% 88%;
+  --card-border: 270 35% 22%;
+  --sidebar: 270 45% 8%;
+  --sidebar-foreground: 45 75% 88%;
+  --sidebar-border: 270 35% 18%;
+  --sidebar-primary: 45 90% 55%;
+  --sidebar-primary-foreground: 270 50% 12%;
+  --sidebar-accent: 270 38% 16%;
+  --sidebar-accent-foreground: 45 75% 88%;
+  --sidebar-ring: 45 90% 55%;
+  --popover: 270 40% 13%;
+  --popover-foreground: 45 75% 88%;
+  --popover-border: 270 35% 22%;
+  --primary: 45 90% 55%;
+  --primary-foreground: 270 50% 12%;
+  --secondary: 270 38% 17%;
+  --secondary-foreground: 45 75% 88%;
+  --muted: 270 30% 18%;
+  --muted-foreground: 45 25% 60%;
+  --accent: 290 70% 55%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 80% 50%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 270 35% 22%;
+  --ring: 45 90% 55%;
+  --button-outline: rgba(220,180,40,.20);
+  --badge-outline: rgba(220,180,40,.10);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(220,180,40,.05);
+  --elevate-2: rgba(220,180,40,.10);
+  --app-font-sans: 'Cinzel', Georgia, serif;
+}
+
+/* ─── DRAGON ─── deep red + gold on dark ──────────────────── */
+[data-color-theme="dragon"] {
+  --background: 0 35% 6%;
+  --foreground: 40 70% 85%;
+  --border: 0 35% 18%;
+  --card: 0 35% 9%;
+  --card-foreground: 40 70% 85%;
+  --card-border: 0 35% 18%;
+  --sidebar: 0 35% 5%;
+  --sidebar-foreground: 40 70% 85%;
+  --sidebar-border: 0 35% 14%;
+  --sidebar-primary: 12 90% 50%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 0 30% 12%;
+  --sidebar-accent-foreground: 40 70% 85%;
+  --sidebar-ring: 12 90% 50%;
+  --popover: 0 35% 9%;
+  --popover-foreground: 40 70% 85%;
+  --popover-border: 0 35% 18%;
+  --primary: 12 90% 50%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 0 30% 13%;
+  --secondary-foreground: 40 70% 85%;
+  --muted: 0 25% 14%;
+  --muted-foreground: 30 30% 55%;
+  --accent: 40 95% 55%;
+  --accent-foreground: 0 0% 0%;
+  --destructive: 0 100% 55%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 0 35% 18%;
+  --ring: 12 90% 50%;
+  --button-outline: rgba(255,80,30,.18);
+  --badge-outline: rgba(255,80,30,.08);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(255,80,30,.05);
+  --elevate-2: rgba(255,80,30,.10);
+}
+
+/* ─── FOREST DRUID ─── deep green & wood ─────────────────── */
+[data-color-theme="forest-druid"] {
+  --background: 130 25% 8%;
+  --foreground: 80 30% 88%;
+  --border: 130 25% 18%;
+  --card: 130 25% 11%;
+  --card-foreground: 80 30% 88%;
+  --card-border: 130 25% 18%;
+  --sidebar: 130 28% 6%;
+  --sidebar-foreground: 80 30% 88%;
+  --sidebar-border: 130 25% 14%;
+  --sidebar-primary: 130 60% 45%;
+  --sidebar-primary-foreground: 130 50% 6%;
+  --sidebar-accent: 130 25% 13%;
+  --sidebar-accent-foreground: 80 30% 88%;
+  --sidebar-ring: 130 60% 45%;
+  --popover: 130 25% 11%;
+  --popover-foreground: 80 30% 88%;
+  --popover-border: 130 25% 18%;
+  --primary: 130 60% 45%;
+  --primary-foreground: 130 50% 6%;
+  --secondary: 130 22% 14%;
+  --secondary-foreground: 80 30% 88%;
+  --muted: 130 18% 15%;
+  --muted-foreground: 100 18% 55%;
+  --accent: 35 60% 45%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 75% 50%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 130 25% 18%;
+  --ring: 130 60% 45%;
+  --button-outline: rgba(80,200,80,.16);
+  --badge-outline: rgba(80,200,80,.08);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(80,200,80,.04);
+  --elevate-2: rgba(80,200,80,.10);
+}
+
+/* ─── CASTLE STONE ─── gray + burgundy ──────────────────── */
+[data-color-theme="castle"] {
+  --background: 220 8% 16%;
+  --foreground: 210 15% 88%;
+  --border: 220 10% 28%;
+  --card: 220 10% 19%;
+  --card-foreground: 210 15% 88%;
+  --card-border: 220 10% 28%;
+  --sidebar: 220 8% 13%;
+  --sidebar-foreground: 210 15% 88%;
+  --sidebar-border: 220 10% 24%;
+  --sidebar-primary: 350 65% 45%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 220 10% 22%;
+  --sidebar-accent-foreground: 210 15% 88%;
+  --sidebar-ring: 350 65% 45%;
+  --popover: 220 10% 19%;
+  --popover-foreground: 210 15% 88%;
+  --popover-border: 220 10% 28%;
+  --primary: 350 65% 45%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 220 10% 22%;
+  --secondary-foreground: 210 15% 88%;
+  --muted: 220 8% 23%;
+  --muted-foreground: 215 10% 60%;
+  --accent: 35 65% 50%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 75% 50%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 220 10% 28%;
+  --ring: 350 65% 45%;
+  --button-outline: rgba(180,40,80,.18);
+  --badge-outline: rgba(180,40,80,.08);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(255,255,255,.04);
+  --elevate-2: rgba(255,255,255,.10);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   NEW THEMES — Retro
+   ════════════════════════════════════════════════════════════════ */
+
+/* ─── TERMINAL AMBER ─── classic amber CRT ──────────────────── */
+[data-color-theme="terminal-amber"] {
+  --background: 30 100% 4%;
+  --foreground: 38 95% 60%;
+  --border: 35 80% 14%;
+  --card: 30 80% 6%;
+  --card-foreground: 38 95% 60%;
+  --card-border: 35 80% 14%;
+  --sidebar: 30 100% 3%;
+  --sidebar-foreground: 38 95% 60%;
+  --sidebar-border: 35 80% 11%;
+  --sidebar-primary: 38 100% 55%;
+  --sidebar-primary-foreground: 30 80% 6%;
+  --sidebar-accent: 30 70% 8%;
+  --sidebar-accent-foreground: 38 95% 60%;
+  --sidebar-ring: 38 100% 55%;
+  --popover: 30 80% 6%;
+  --popover-foreground: 38 95% 60%;
+  --popover-border: 35 80% 14%;
+  --primary: 38 100% 55%;
+  --primary-foreground: 30 80% 6%;
+  --secondary: 30 70% 9%;
+  --secondary-foreground: 38 95% 60%;
+  --muted: 35 50% 11%;
+  --muted-foreground: 38 50% 45%;
+  --accent: 25 100% 50%;
+  --accent-foreground: 0 0% 0%;
+  --destructive: 0 100% 50%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 35 80% 14%;
+  --ring: 38 100% 55%;
+  --button-outline: rgba(255,176,40,.18);
+  --badge-outline: rgba(255,176,40,.08);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(255,176,40,.05);
+  --elevate-2: rgba(255,176,40,.10);
+  --app-font-sans: 'Courier New', monospace;
+}
+
+/* ─── NEWSPAPER ─── black on cream serif ──────────────────── */
+[data-color-theme="newspaper"] {
+  --background: 45 30% 94%;
+  --foreground: 0 0% 8%;
+  --border: 40 15% 80%;
+  --card: 40 30% 97%;
+  --card-foreground: 0 0% 8%;
+  --card-border: 40 15% 80%;
+  --sidebar: 45 25% 92%;
+  --sidebar-foreground: 0 0% 8%;
+  --sidebar-border: 40 15% 78%;
+  --sidebar-primary: 0 0% 8%;
+  --sidebar-primary-foreground: 45 30% 96%;
+  --sidebar-accent: 40 18% 87%;
+  --sidebar-accent-foreground: 0 0% 8%;
+  --sidebar-ring: 0 0% 8%;
+  --popover: 40 30% 97%;
+  --popover-foreground: 0 0% 8%;
+  --popover-border: 40 15% 80%;
+  --primary: 0 0% 8%;
+  --primary-foreground: 45 30% 96%;
+  --secondary: 40 18% 88%;
+  --secondary-foreground: 0 0% 8%;
+  --muted: 40 15% 88%;
+  --muted-foreground: 0 0% 35%;
+  --accent: 0 60% 35%;
+  --accent-foreground: 45 30% 96%;
+  --destructive: 0 80% 40%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 40 15% 80%;
+  --ring: 0 0% 8%;
+  --button-outline: rgba(0,0,0,.18);
+  --badge-outline: rgba(0,0,0,.08);
+  --opaque-button-border-intensity: -12;
+  --elevate-1: rgba(0,0,0,.04);
+  --elevate-2: rgba(0,0,0,.10);
+  --app-font-sans: 'Times New Roman', Georgia, serif;
+}
+
+/* ─── Y2K ─── chrome + electric blue ─────────────────────── */
+[data-color-theme="y2k"] {
+  --background: 210 30% 92%;
+  --foreground: 220 50% 12%;
+  --border: 210 25% 78%;
+  --card: 210 40% 96%;
+  --card-foreground: 220 50% 12%;
+  --card-border: 210 25% 78%;
+  --sidebar: 210 30% 88%;
+  --sidebar-foreground: 220 50% 12%;
+  --sidebar-border: 210 25% 75%;
+  --sidebar-primary: 210 100% 50%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 210 30% 84%;
+  --sidebar-accent-foreground: 220 50% 12%;
+  --sidebar-ring: 210 100% 50%;
+  --popover: 210 40% 96%;
+  --popover-foreground: 220 50% 12%;
+  --popover-border: 210 25% 78%;
+  --primary: 210 100% 50%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 210 30% 85%;
+  --secondary-foreground: 220 50% 12%;
+  --muted: 210 25% 86%;
+  --muted-foreground: 220 20% 40%;
+  --accent: 290 90% 60%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 80% 50%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 210 25% 78%;
+  --ring: 210 100% 50%;
+  --button-outline: rgba(0,80,255,.18);
+  --badge-outline: rgba(0,80,255,.08);
+  --opaque-button-border-intensity: -8;
+  --elevate-1: rgba(0,80,255,.04);
+  --elevate-2: rgba(0,80,255,.10);
+}
+
+/* ─── COFFEE SHOP ─── warm browns ────────────────────────── */
+[data-color-theme="coffee"] {
+  --background: 25 20% 92%;
+  --foreground: 25 50% 14%;
+  --border: 25 18% 78%;
+  --card: 25 25% 95%;
+  --card-foreground: 25 50% 14%;
+  --card-border: 25 18% 78%;
+  --sidebar: 25 18% 88%;
+  --sidebar-foreground: 25 50% 14%;
+  --sidebar-border: 25 18% 76%;
+  --sidebar-primary: 22 60% 35%;
+  --sidebar-primary-foreground: 25 30% 95%;
+  --sidebar-accent: 25 22% 84%;
+  --sidebar-accent-foreground: 25 50% 14%;
+  --sidebar-ring: 22 60% 35%;
+  --popover: 25 25% 95%;
+  --popover-foreground: 25 50% 14%;
+  --popover-border: 25 18% 78%;
+  --primary: 22 60% 35%;
+  --primary-foreground: 25 30% 95%;
+  --secondary: 25 22% 84%;
+  --secondary-foreground: 25 50% 14%;
+  --muted: 25 18% 86%;
+  --muted-foreground: 25 25% 38%;
+  --accent: 35 70% 48%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 75% 45%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 25 18% 78%;
+  --ring: 22 60% 35%;
+  --button-outline: rgba(0,0,0,.12);
+  --badge-outline: rgba(0,0,0,.06);
+  --opaque-button-border-intensity: -10;
+  --elevate-1: rgba(0,0,0,.04);
+  --elevate-2: rgba(0,0,0,.10);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   NEW THEMES — Aesthetic
+   ════════════════════════════════════════════════════════════════ */
+
+/* ─── NOIR ─── high contrast B&W ─────────────────────────── */
+[data-color-theme="noir"] {
+  --background: 0 0% 4%;
+  --foreground: 0 0% 96%;
+  --border: 0 0% 20%;
+  --card: 0 0% 8%;
+  --card-foreground: 0 0% 96%;
+  --card-border: 0 0% 20%;
+  --sidebar: 0 0% 3%;
+  --sidebar-foreground: 0 0% 96%;
+  --sidebar-border: 0 0% 16%;
+  --sidebar-primary: 0 0% 96%;
+  --sidebar-primary-foreground: 0 0% 4%;
+  --sidebar-accent: 0 0% 11%;
+  --sidebar-accent-foreground: 0 0% 96%;
+  --sidebar-ring: 0 0% 96%;
+  --popover: 0 0% 8%;
+  --popover-foreground: 0 0% 96%;
+  --popover-border: 0 0% 20%;
+  --primary: 0 0% 96%;
+  --primary-foreground: 0 0% 4%;
+  --secondary: 0 0% 12%;
+  --secondary-foreground: 0 0% 96%;
+  --muted: 0 0% 14%;
+  --muted-foreground: 0 0% 65%;
+  --accent: 0 0% 70%;
+  --accent-foreground: 0 0% 4%;
+  --destructive: 0 80% 55%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 0 0% 20%;
+  --ring: 0 0% 96%;
+  --button-outline: rgba(255,255,255,.18);
+  --badge-outline: rgba(255,255,255,.08);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(255,255,255,.05);
+  --elevate-2: rgba(255,255,255,.10);
+}
+
+/* ─── CHERRY BLOSSOM ─── soft pink ────────────────────────── */
+[data-color-theme="cherry-blossom"] {
+  --background: 350 70% 97%;
+  --foreground: 340 60% 18%;
+  --border: 345 35% 86%;
+  --card: 0 0% 100%;
+  --card-foreground: 340 60% 18%;
+  --card-border: 345 35% 86%;
+  --sidebar: 345 60% 95%;
+  --sidebar-foreground: 340 60% 18%;
+  --sidebar-border: 345 35% 84%;
+  --sidebar-primary: 340 65% 55%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 345 50% 90%;
+  --sidebar-accent-foreground: 340 60% 18%;
+  --sidebar-ring: 340 65% 55%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 340 60% 18%;
+  --popover-border: 345 35% 86%;
+  --primary: 340 65% 55%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 345 50% 91%;
+  --secondary-foreground: 340 60% 18%;
+  --muted: 345 40% 92%;
+  --muted-foreground: 340 18% 45%;
+  --accent: 100 50% 50%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 75% 50%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 345 35% 86%;
+  --ring: 340 65% 55%;
+  --button-outline: rgba(0,0,0,.10);
+  --badge-outline: rgba(0,0,0,.05);
+  --opaque-button-border-intensity: -8;
+  --elevate-1: rgba(0,0,0,.03);
+  --elevate-2: rgba(0,0,0,.08);
+}
+
+/* ─── DESERT DUNE ─── warm sand ────────────────────────────── */
+[data-color-theme="desert"] {
+  --background: 35 50% 90%;
+  --foreground: 25 60% 18%;
+  --border: 30 30% 75%;
+  --card: 35 60% 94%;
+  --card-foreground: 25 60% 18%;
+  --card-border: 30 30% 75%;
+  --sidebar: 35 45% 86%;
+  --sidebar-foreground: 25 60% 18%;
+  --sidebar-border: 30 30% 73%;
+  --sidebar-primary: 18 75% 45%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 30 35% 82%;
+  --sidebar-accent-foreground: 25 60% 18%;
+  --sidebar-ring: 18 75% 45%;
+  --popover: 35 60% 94%;
+  --popover-foreground: 25 60% 18%;
+  --popover-border: 30 30% 75%;
+  --primary: 18 75% 45%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 30 35% 83%;
+  --secondary-foreground: 25 60% 18%;
+  --muted: 30 28% 84%;
+  --muted-foreground: 25 25% 38%;
+  --accent: 200 70% 45%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 80% 48%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 30 30% 75%;
+  --ring: 18 75% 45%;
+  --button-outline: rgba(0,0,0,.10);
+  --badge-outline: rgba(0,0,0,.05);
+  --opaque-button-border-intensity: -8;
+  --elevate-1: rgba(0,0,0,.04);
+  --elevate-2: rgba(0,0,0,.10);
+}
+
+/* ─── ARCTIC ─── icy blue ──────────────────────────────────── */
+[data-color-theme="arctic"] {
+  --background: 195 35% 96%;
+  --foreground: 210 60% 14%;
+  --border: 200 30% 84%;
+  --card: 195 40% 98%;
+  --card-foreground: 210 60% 14%;
+  --card-border: 200 30% 84%;
+  --sidebar: 195 35% 94%;
+  --sidebar-foreground: 210 60% 14%;
+  --sidebar-border: 200 30% 82%;
+  --sidebar-primary: 200 80% 45%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 195 30% 89%;
+  --sidebar-accent-foreground: 210 60% 14%;
+  --sidebar-ring: 200 80% 45%;
+  --popover: 195 40% 98%;
+  --popover-foreground: 210 60% 14%;
+  --popover-border: 200 30% 84%;
+  --primary: 200 80% 45%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 195 30% 90%;
+  --secondary-foreground: 210 60% 14%;
+  --muted: 195 25% 91%;
+  --muted-foreground: 200 20% 40%;
+  --accent: 175 70% 40%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 75% 50%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 200 30% 84%;
+  --ring: 200 80% 45%;
+  --button-outline: rgba(0,0,0,.10);
+  --badge-outline: rgba(0,0,0,.05);
+  --opaque-button-border-intensity: -8;
+  --elevate-1: rgba(0,0,0,.03);
+  --elevate-2: rgba(0,0,0,.08);
+}
+
+/* ─── FOREST DEEP ─── rich evergreen ───────────────────────── */
+[data-color-theme="forest-deep"] {
+  --background: 150 30% 8%;
+  --foreground: 80 25% 92%;
+  --border: 150 22% 18%;
+  --card: 150 28% 11%;
+  --card-foreground: 80 25% 92%;
+  --card-border: 150 22% 18%;
+  --sidebar: 150 30% 6%;
+  --sidebar-foreground: 80 25% 92%;
+  --sidebar-border: 150 22% 14%;
+  --sidebar-primary: 150 60% 42%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 150 22% 13%;
+  --sidebar-accent-foreground: 80 25% 92%;
+  --sidebar-ring: 150 60% 42%;
+  --popover: 150 28% 11%;
+  --popover-foreground: 80 25% 92%;
+  --popover-border: 150 22% 18%;
+  --primary: 150 60% 42%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 150 22% 14%;
+  --secondary-foreground: 80 25% 92%;
+  --muted: 150 18% 15%;
+  --muted-foreground: 100 15% 55%;
+  --accent: 35 75% 50%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 75% 50%;
+  --destructive-foreground: 0 0% 100%;
+  --input: 150 22% 18%;
+  --ring: 150 60% 42%;
+  --button-outline: rgba(80,200,140,.16);
+  --badge-outline: rgba(80,200,140,.08);
+  --opaque-button-border-intensity: 9;
+  --elevate-1: rgba(80,200,140,.04);
+  --elevate-2: rgba(80,200,140,.10);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   USER CUSTOM THEMES — applied via [data-color-theme="custom-*"]
+   These rely on inline CSS variables injected by ThemeProvider.
+   ════════════════════════════════════════════════════════════════ */

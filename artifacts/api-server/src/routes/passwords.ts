@@ -60,7 +60,7 @@ router.post("/passwords", async (req: Request, res: Response) => {
 
 router.get("/passwords/:id/reveal", async (req: Request, res: Response) => {
   if (!requireAuth(req, res)) return;
-  const id = parseInt(req.params.id, 10);
+  const id = parseInt(String(req.params.id), 10);
   const [row] = await db
     .select()
     .from(passwordsTable)
@@ -74,7 +74,7 @@ router.get("/passwords/:id/reveal", async (req: Request, res: Response) => {
 
 router.get("/passwords/:id/totp", async (req: Request, res: Response) => {
   if (!requireAuth(req, res)) return;
-  const id = parseInt(req.params.id, 10);
+  const id = parseInt(String(req.params.id), 10);
   const [row] = await db
     .select()
     .from(passwordsTable)
@@ -90,7 +90,7 @@ router.get("/passwords/:id/totp", async (req: Request, res: Response) => {
 
 router.patch("/passwords/:id", async (req: Request, res: Response) => {
   if (!requireAuth(req, res)) return;
-  const id = parseInt(req.params.id, 10);
+  const id = parseInt(String(req.params.id), 10);
   const [existing] = await db
     .select()
     .from(passwordsTable)
@@ -117,7 +117,7 @@ router.patch("/passwords/:id", async (req: Request, res: Response) => {
 
 router.delete("/passwords/:id", async (req: Request, res: Response) => {
   if (!requireAuth(req, res)) return;
-  const id = parseInt(req.params.id, 10);
+  const id = parseInt(String(req.params.id), 10);
   const [existing] = await db
     .select()
     .from(passwordsTable)

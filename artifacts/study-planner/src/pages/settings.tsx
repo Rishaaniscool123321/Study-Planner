@@ -109,62 +109,32 @@ export default function Settings() {
         <p className="text-muted-foreground mt-1">Customise your Study Planner.</p>
       </motion.div>
 
-      {/* ── Colour Theme ───────────────────────────────────────────── */}
-      <motion.div variants={itemVariants} className="space-y-4">
+      {/* ── Appearance link ─────────────────────────────────────── */}
+      <motion.div variants={itemVariants} className="space-y-3">
         <div>
-          <h2 className="text-xl font-semibold">Colour Theme</h2>
-          <p className="text-sm text-muted-foreground">Pick the overall look of the app.</p>
+          <h2 className="text-xl font-semibold">Appearance</h2>
+          <p className="text-sm text-muted-foreground">
+            46+ themes, custom theme creator, fonts, density, sidebar layout — all in one place.
+          </p>
         </div>
-        {(["Classic", "Terminal", "Editor Famous", "Wild & Crazy", "Nature", "Vibrant"] as const).map((groupLabel) => {
-          const tagMap: Record<string, string | undefined> = {
-            "Classic": undefined,
-            "Terminal": "terminal",
-            "Editor Famous": "editor",
-            "Wild & Crazy": "wild",
-            "Nature": "nature",
-            "Vibrant": "vibrant",
-          };
-          const tag = tagMap[groupLabel];
-          const grouped = COLOR_THEMES.filter((t) =>
-            tag === undefined ? !t.tag : t.tag === tag
-          );
-          if (!grouped.length) return null;
-          return (
-            <div key={groupLabel} className="space-y-2">
-              <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">{groupLabel}</p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {grouped.map((t) => {
-                  const active = colorTheme === t.id;
-                  return (
-                    <button
-                      key={t.id}
-                      onClick={() => setColorTheme(t.id as ColorThemeId)}
-                      className={`relative rounded-xl border-2 overflow-hidden transition-all text-left ${
-                        active ? "border-primary shadow-md scale-[1.02]" : "border-border hover:border-primary/40"
-                      }`}
-                    >
-                      <div
-                        className="h-12 w-full flex items-end px-3 pb-2"
-                        style={{ backgroundColor: t.preview.bg }}
-                      >
-                        <div className="h-3 w-14 rounded-full" style={{ backgroundColor: t.preview.primary }} />
-                      </div>
-                      <div className="px-3 py-2 bg-card border-t border-border">
-                        <p className="text-xs font-semibold">{t.name}</p>
-                        <p className="text-[10px] text-muted-foreground leading-tight">{t.description}</p>
-                      </div>
-                      {active && (
-                        <div className="absolute top-1.5 right-1.5 w-4 h-4 rounded-full bg-primary flex items-center justify-center">
-                          <Check className="h-2.5 w-2.5 text-primary-foreground" />
-                        </div>
-                      )}
-                    </button>
-                  );
-                })}
+        <Card>
+          <CardContent className="p-4 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                <Check className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <p className="font-semibold">
+                  Active theme: <span className="text-primary">{COLOR_THEMES.find((t) => t.id === colorTheme)?.name ?? "Custom"}</span>
+                </p>
+                <p className="text-xs text-muted-foreground">Open the Customize page for full controls.</p>
               </div>
             </div>
-          );
-        })}
+            <a href={`${import.meta.env.BASE_URL}customize`}>
+              <Button size="sm">Open Customize</Button>
+            </a>
+          </CardContent>
+        </Card>
       </motion.div>
 
       {/* ── Light / Dark ───────────────────────────────────────────── */}
