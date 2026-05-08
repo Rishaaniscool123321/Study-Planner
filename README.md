@@ -113,11 +113,11 @@ Most study apps:
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ Code involved
 
 - HTML  
 - CSS  
-- JavaScript  
+- TypeScript  
 - Replit (hosting & authentication)
 
 ---
