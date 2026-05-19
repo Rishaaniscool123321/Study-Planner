@@ -223,6 +223,45 @@ export const DeleteSessionParams = zod.object({
 });
 
 /**
+ * @summary Import study sessions from an iCalendar (.ics) payload
+ */
+
+export const importIcalBodyWindowDaysMax = 365;
+
+export const ImportIcalBody = zod.object({
+  ics: zod.string().min(1),
+  defaultSubjectId: zod.number().nullish(),
+  sourceUrl: zod.string().nullish(),
+  windowDays: zod.number().min(1).max(importIcalBodyWindowDaysMax).nullish(),
+});
+
+export const ImportIcalResponse = zod.object({
+  imported: zod.number(),
+  updated: zod.number(),
+  skipped: zod.number(),
+  total: zod.number(),
+});
+
+/**
+ * @summary Fetch and import study sessions from an iCalendar URL
+ */
+
+export const importIcalUrlBodyWindowDaysMax = 365;
+
+export const ImportIcalUrlBody = zod.object({
+  url: zod.string().min(1),
+  defaultSubjectId: zod.number().nullish(),
+  windowDays: zod.number().min(1).max(importIcalUrlBodyWindowDaysMax).nullish(),
+});
+
+export const ImportIcalUrlResponse = zod.object({
+  imported: zod.number(),
+  updated: zod.number(),
+  skipped: zod.number(),
+  total: zod.number(),
+});
+
+/**
  * @summary Get overall progress summary
  */
 export const GetStatsSummaryResponse = zod.object({

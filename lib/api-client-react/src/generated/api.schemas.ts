@@ -186,6 +186,36 @@ export interface UpdateSessionBody {
   notes?: string | null;
 }
 
+export interface ImportIcalBody {
+  /** @minLength 1 */
+  ics: string;
+  defaultSubjectId?: number | null;
+  sourceUrl?: string | null;
+  /**
+   * @minimum 1
+   * @maximum 365
+   */
+  windowDays?: number | null;
+}
+
+export interface ImportIcalUrlBody {
+  /** @minLength 1 */
+  url: string;
+  defaultSubjectId?: number | null;
+  /**
+   * @minimum 1
+   * @maximum 365
+   */
+  windowDays?: number | null;
+}
+
+export interface ImportIcalResult {
+  imported: number;
+  updated: number;
+  skipped: number;
+  total: number;
+}
+
 export interface StatsSummary {
   totalTasks: number;
   completedTasks: number;

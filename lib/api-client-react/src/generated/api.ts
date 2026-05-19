@@ -25,6 +25,9 @@ import type {
   ErrorEnvelope,
   HandleBrowserLoginCallbackParams,
   HealthStatus,
+  ImportIcalBody,
+  ImportIcalResult,
+  ImportIcalUrlBody,
   ListSessionsParams,
   ListTasksParams,
   LogoutSuccess,
@@ -1236,6 +1239,251 @@ export const useDeleteSession = <
 > => {
   return useMutation(getDeleteSessionMutationOptions(options));
 };
+
+/**
+ * @summary Import study sessions from an iCalendar (.ics) payload
+ */
+export const getImportIcalUrl = () => {
+  return `/api/sessions/import-ical`;
+};
+
+export const importIcal = async (
+  importIcalBody: ImportIcalBody,
+  options?: RequestInit,
+): Promise<ImportIcalResult> => {
+  return customFetch<ImportIcalResult>(getImportIcalUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(importIcalBody),
+  });
+};
+
+export const getImportIcalMutationOptions = <
+  TError = ErrorType<ErrorEnvelope>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof importIcal>>,
+    TError,
+    { data: BodyType<ImportIcalBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof importIcal>>,
+  TError,
+  { data: BodyType<ImportIcalBody> },
+  TContext
+> => {
+  const mutationKey = ["importIcal"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof importIcal>>,
+    { data: BodyType<ImportIcalBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return importIcal(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ImportIcalMutationResult = NonNullable<
+  Awaited<ReturnType<typeof importIcal>>
+>;
+export type ImportIcalMutationBody = BodyType<ImportIcalBody>;
+export type ImportIcalMutationError = ErrorType<ErrorEnvelope>;
+
+/**
+ * @summary Import study sessions from an iCalendar (.ics) payload
+ */
+export const useImportIcal = <
+  TError = ErrorType<ErrorEnvelope>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof importIcal>>,
+    TError,
+    { data: BodyType<ImportIcalBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof importIcal>>,
+  TError,
+  { data: BodyType<ImportIcalBody> },
+  TContext
+> => {
+  return useMutation(getImportIcalMutationOptions(options));
+};
+
+/**
+ * @summary Fetch and import study sessions from an iCalendar URL
+ */
+export const getImportIcalUrlUrl = () => {
+  return `/api/sessions/import-ical-url`;
+};
+
+export const importIcalUrl = async (
+  importIcalUrlBody: ImportIcalUrlBody,
+  options?: RequestInit,
+): Promise<ImportIcalResult> => {
+  return customFetch<ImportIcalResult>(getImportIcalUrlUrl(), {
+    ...options,
+    method: "POST",
+    headers: { "Content-Type": "application/json", ...options?.headers },
+    body: JSON.stringify(importIcalUrlBody),
+  });
+};
+
+export const getImportIcalUrlMutationOptions = <
+  TError = ErrorType<ErrorEnvelope>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof importIcalUrl>>,
+    TError,
+    { data: BodyType<ImportIcalUrlBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+  Awaited<ReturnType<typeof importIcalUrl>>,
+  TError,
+  { data: BodyType<ImportIcalUrlBody> },
+  TContext
+> => {
+  const mutationKey = ["importIcalUrl"];
+  const { mutation: mutationOptions, request: requestOptions } = options
+    ? options.mutation &&
+      "mutationKey" in options.mutation &&
+      options.mutation.mutationKey
+      ? options
+      : { ...options, mutation: { ...options.mutation, mutationKey } }
+    : { mutation: { mutationKey }, request: undefined };
+
+  const mutationFn: MutationFunction<
+    Awaited<ReturnType<typeof importIcalUrl>>,
+    { data: BodyType<ImportIcalUrlBody> }
+  > = (props) => {
+    const { data } = props ?? {};
+
+    return importIcalUrl(data, requestOptions);
+  };
+
+  return { mutationFn, ...mutationOptions };
+};
+
+export type ImportIcalUrlMutationResult = NonNullable<
+  Awaited<ReturnType<typeof importIcalUrl>>
+>;
+export type ImportIcalUrlMutationBody = BodyType<ImportIcalUrlBody>;
+export type ImportIcalUrlMutationError = ErrorType<ErrorEnvelope>;
+
+/**
+ * @summary Fetch and import study sessions from an iCalendar URL
+ */
+export const useImportIcalUrl = <
+  TError = ErrorType<ErrorEnvelope>,
+  TContext = unknown,
+>(options?: {
+  mutation?: UseMutationOptions<
+    Awaited<ReturnType<typeof importIcalUrl>>,
+    TError,
+    { data: BodyType<ImportIcalUrlBody> },
+    TContext
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseMutationResult<
+  Awaited<ReturnType<typeof importIcalUrl>>,
+  TError,
+  { data: BodyType<ImportIcalUrlBody> },
+  TContext
+> => {
+  return useMutation(getImportIcalUrlMutationOptions(options));
+};
+
+/**
+ * @summary Export all sessions as an iCalendar feed
+ */
+export const getExportIcalUrl = () => {
+  return `/api/sessions/export.ics`;
+};
+
+export const exportIcal = async (options?: RequestInit): Promise<string> => {
+  return customFetch<string>(getExportIcalUrl(), {
+    ...options,
+    method: "GET",
+  });
+};
+
+export const getExportIcalQueryKey = () => {
+  return [`/api/sessions/export.ics`] as const;
+};
+
+export const getExportIcalQueryOptions = <
+  TData = Awaited<ReturnType<typeof exportIcal>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof exportIcal>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}) => {
+  const { query: queryOptions, request: requestOptions } = options ?? {};
+
+  const queryKey = queryOptions?.queryKey ?? getExportIcalQueryKey();
+
+  const queryFn: QueryFunction<Awaited<ReturnType<typeof exportIcal>>> = ({
+    signal,
+  }) => exportIcal({ signal, ...requestOptions });
+
+  return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+    Awaited<ReturnType<typeof exportIcal>>,
+    TError,
+    TData
+  > & { queryKey: QueryKey };
+};
+
+export type ExportIcalQueryResult = NonNullable<
+  Awaited<ReturnType<typeof exportIcal>>
+>;
+export type ExportIcalQueryError = ErrorType<unknown>;
+
+/**
+ * @summary Export all sessions as an iCalendar feed
+ */
+
+export function useExportIcal<
+  TData = Awaited<ReturnType<typeof exportIcal>>,
+  TError = ErrorType<unknown>,
+>(options?: {
+  query?: UseQueryOptions<
+    Awaited<ReturnType<typeof exportIcal>>,
+    TError,
+    TData
+  >;
+  request?: SecondParameter<typeof customFetch>;
+}): UseQueryResult<TData, TError> & { queryKey: QueryKey } {
+  const queryOptions = getExportIcalQueryOptions(options);
+
+  const query = useQuery(queryOptions) as UseQueryResult<TData, TError> & {
+    queryKey: QueryKey;
+  };
+
+  return { ...query, queryKey: queryOptions.queryKey };
+}
 
 /**
  * @summary Get overall progress summary

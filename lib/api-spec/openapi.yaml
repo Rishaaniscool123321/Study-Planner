@@ -288,6 +288,69 @@ paths:
         "204":
           description: Deleted
 
+  /sessions/import-ical:
+    post:
+      operationId: importIcal
+      tags: [sessions]
+      summary: Import study sessions from an iCalendar (.ics) payload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImportIcalBody"
+      responses:
+        "200":
+          description: Import result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImportIcalResult"
+        "400":
+          description: Invalid ICS payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /sessions/import-ical-url:
+    post:
+      operationId: importIcalUrl
+      tags: [sessions]
+      summary: Fetch and import study sessions from an iCalendar URL
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImportIcalUrlBody"
+      responses:
+        "200":
+          description: Import result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImportIcalResult"
+        "400":
+          description: Invalid URL or fetch failed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+
+  /sessions/export.ics:
+    get:
+      operationId: exportIcal
+      tags: [sessions]
+      summary: Export all sessions as an iCalendar feed
+      responses:
+        "200":
+          description: iCalendar feed
+          content:
+            text/calendar:
+              schema:
+                type: string
+
   /stats/summary:
     get:
       operationId: getStatsSummary
@@ -716,6 +779,60 @@ components:
         notes:
           type: string
           nullable: true
+
+    ImportIcalBody:
+      type: object
+      properties:
+        ics:
+          type: string
+          minLength: 1
+        defaultSubjectId:
+          type: integer
+          nullable: true
+        sourceUrl:
+          type: string
+          nullable: true
+        windowDays:
+          type: integer
+          minimum: 1
+          maximum: 365
+          nullable: true
+      required:
+        - ics
+
+    ImportIcalUrlBody:
+      type: object
+      properties:
+        url:
+          type: string
+          minLength: 1
+        defaultSubjectId:
+          type: integer
+          nullable: true
+        windowDays:
+          type: integer
+          minimum: 1
+          maximum: 365
+          nullable: true
+      required:
+        - url
+
+    ImportIcalResult:
+      type: object
+      properties:
+        imported:
+          type: integer
+        updated:
+          type: integer
+        skipped:
+          type: integer
+        total:
+          type: integer
+      required:
+        - imported
+        - updated
+        - skipped
+        - total
 
     StatsSummary:
       type: object
