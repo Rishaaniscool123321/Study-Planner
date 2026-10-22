@@ -98,7 +98,7 @@ export default function Timer() {
             <Progress value={progress} className="h-2 w-full" />
 
             <div className="flex items-center gap-3">
-              <Button variant="outline" size="icon" onClick={reset} disabled={!running && seconds === totalSeconds}>
+              <Button variant="outline" size="icon" aria-label="Reset timer" onClick={reset} disabled={!running && seconds === totalSeconds}>
                 <RotateCcw className="h-4 w-4" />
               </Button>
               {running ? (

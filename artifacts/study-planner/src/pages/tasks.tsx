@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion, AnimatePresence } from "framer-motion";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
 import {
   Plus, CheckCircle2, Circle, Trash2, Edit, AlertCircle, Calendar, Filter
 } from "lucide-react";
@@ -233,7 +233,7 @@ export default function Tasks() {
               tasks.map((task) => {
                 const subject = subjects?.find((s) => s.id === task.subjectId);
                 const isOverdue =
-                  !task.completed && task.dueDate && task.dueDate < new Date().toISOString().split("T")[0];
+                  !task.completed && task.dueDate && task.dueDate < format(new Date(), "yyyy-MM-dd");
                 return (
                   <motion.div
                     key={task.id}
@@ -247,6 +247,7 @@ export default function Tasks() {
                       <CardContent className="p-4 flex items-center gap-3">
                         <button
                           onClick={() => handleToggle(task)}
+                          aria-label={`${task.completed ? "Reopen" : "Complete"} task: ${task.title}`}
                           className="text-muted-foreground hover:text-primary transition-colors flex-shrink-0"
                         >
                           {task.completed ? (
@@ -267,7 +268,7 @@ export default function Tasks() {
                             <div className={`flex items-center text-xs mt-1 gap-1 ${isOverdue ? "text-destructive" : "text-muted-foreground"}`}>
                               {isOverdue && <AlertCircle className="h-3 w-3" />}
                               <Calendar className="h-3 w-3" />
-                              {format(new Date(task.dueDate), "MMM d, yyyy")}
+                              {format(parseISO(task.dueDate), "MMM d, yyyy")}
                               {isOverdue && " — Overdue"}
                             </div>
                           )}
@@ -281,13 +282,14 @@ export default function Tasks() {
                         </div>
 
                         <div className="flex items-center gap-1 flex-shrink-0">
-                          <Button variant="ghost" size="icon" onClick={() => openEditTask(task)}>
+                          <Button variant="ghost" size="icon" onClick={() => openEditTask(task)} aria-label={`Edit task: ${task.title}`}>
                             <Edit className="h-4 w-4" />
                           </Button>
                           <Button
                             variant="ghost"
                             size="icon"
                             onClick={() => handleDelete(task.id)}
+                            aria-label={`Delete task: ${task.title}`}
                             className="hover:text-destructive"
                           >
                             <Trash2 className="h-4 w-4" />
